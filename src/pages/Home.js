@@ -1,4 +1,4 @@
-import { Box, ButtonBase, Container, makeStyles, Typography } from '@material-ui/core'
+import { Box, ButtonBase, Container, Fade, Grow, makeStyles, Typography } from '@material-ui/core'
 import React from 'react'
 import Image from '../components/Image'
 import { useHistory } from "react-router-dom";
@@ -32,7 +32,7 @@ const useStyles = makeStyles( (theme) => ({
     justifyContent:'space-between'
   },
   section: {
-    transition:'box-shadow 0.2s ease-in-out',
+    transition:'all 0.2s ease-in-out',
     position:'relative',
     height:150,
     width:350,    
@@ -82,11 +82,13 @@ const Home = () => {
   
   return (
     <Container>
-      <Box textAlign="center" mt={2}>
-        <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center">         
-          <Typography variant='subtitle1'>Bienvenido</Typography>
-          <Image path={Partner} style={{ width:'100px' }} />
-        </Box>
+      <Box textAlign="center" paddingTop={5}>
+        <Fade in timeout={500}>
+          <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="flex-start">         
+            <Typography variant='subtitle1'>Bienvenido</Typography>
+            <Image path={Partner} style={{ width:'100px' }} />
+          </Box>
+        </Fade>
         <Box
           mt={5}
           display="flex"
@@ -96,25 +98,28 @@ const Home = () => {
           width="100%"
         >
           {filteredSections.map( (section, index) => (
-            <ButtonBase 
-              style={{ backgroundColor:`${colors[index]}`}}
-              className={classes.section} 
-              key={index}
-              onClick={ () => history.push(`/${section.link}`) }
-              focusRipple>
-              <div className={classes.image}>
-                <Image path={Pokeball} style={{ width:'200px', position:'relative', right:'-130px', bottom:'-10px' }} />
-              </div>          
-              <div className={classes.sectionTitle}>
-                <Typography
-                  component="span"
-                  color="inherit"
-                  variant='subtitle2'              
-                >
-                  {section.name}              
-                </Typography>
+            <Grow in timeout={ index * 500 } key={index}>
+              <div>
+                <ButtonBase 
+                  style={{ backgroundColor:`${colors[index]}`}}
+                  className={classes.section}                 
+                  onClick={ () => history.push(`/${section.link}`) }
+                  focusRipple>
+                  <div className={classes.image}>
+                    <Image path={Pokeball} style={{ width:'200px', position:'relative', right:'-130px', bottom:'-10px' }} />
+                  </div>          
+                  <div className={classes.sectionTitle}>
+                    <Typography
+                      component="span"
+                      color="inherit"
+                      variant='subtitle2'              
+                    >
+                      {section.name}              
+                    </Typography>
+                  </div>
+                </ButtonBase>
               </div>
-            </ButtonBase>
+            </Grow>
           ) )}
         </Box>
       </Box>

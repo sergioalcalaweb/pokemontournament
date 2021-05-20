@@ -1,5 +1,5 @@
 import './services/firebase';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
@@ -7,15 +7,56 @@ import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from '@material-ui/styles';
 import theme from './services/theme';
 import FirebaseProvider from './context/Firebase';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import * as serviceWorker from './serviceWorkerRegistration';
+import { Button, Snackbar } from '@material-ui/core';
+
+const AppRender =  () => {
+
+  const [ apppUpdate, setAppUpdate ] = useState({
+    newVersion:false,
+    waitingWorker: {}
+  });
+
+  const onUpdate = (registration) => {
+    setAppUpdate({
+      waitingWorker: registration && registration.waiting,
+      newVersion: true
+    })
+  }
+
+  const updateServiceWorker = () => {
+    const {waitingWorker} = apppUpdate;
+    waitingWorker && waitingWorker.postMessage({ type: "SKIP_WAITING" });
+    window.location.reload();
+  }
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') {
+      serviceWorker.register({ onUpdate: onUpdate });
+    }
+  }, [])
+
+  return (
+    <ThemeProvider theme={theme}>
+      <FirebaseProvider>
+        <App />
+        <Snackbar 
+          open={apppUpdate.newVersion} 
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          message="Hay una nueva version disponible " action={
+          <Button color='secondary' onClick={updateServiceWorker}> Actualizar </Button>
+        } />
+      </FirebaseProvider>
+    </ThemeProvider>
+  )
+}
 
 
 ReactDOM.render(  
-  <ThemeProvider theme={theme}>
-    <FirebaseProvider>
-      <App />
-    </FirebaseProvider>
-  </ThemeProvider>
+  <AppRender />
   ,
   document.getElementById('root')
 );
@@ -24,4 +65,3 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-serviceWorkerRegistration.register();

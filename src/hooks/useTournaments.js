@@ -5,8 +5,10 @@ import faker from 'faker';
 
 
 const useTournaments = () => {
+
+  const firestore = useFirestore();
   
-  const tournamentsRef = useFirestore().collection('tournaments');
+  const tournamentsRef = firestore.collection('tournaments');
   const { data: all } = useFirestoreCollectionData(tournamentsRef.orderBy('timestamp', 'desc'), { idField: "id" });  
   
   const create = (tournamentInfo) => {
@@ -92,6 +94,7 @@ const useTournaments = () => {
         email,
         points:0,
         win:0,
+        pct:0,
         loose:0
       }
       :
@@ -115,10 +118,11 @@ const useTournaments = () => {
           userID: faker.random.uuid(),
           pokemonNick: faker.internet.userName(),
           pokemonID: '123412341234',
-          photoURL: `https://robohash.org/${faker.internet.avatar()}.png`,
+          photoURL: `https://robohash.org/${faker.internet.userName()}.png`,
           email: faker.internet.email(),
           points:0,
           win:0,
+          pct:0,
           loose:0
         }
         :
@@ -126,7 +130,7 @@ const useTournaments = () => {
           userID: faker.random.uuid(),
           pokemonNick: faker.internet.userName(),
           pokemonID: '123412341234',
-          photoURL: `https://robohash.org/${faker.internet.avatar()}.png`,
+          photoURL: `https://robohash.org/${faker.internet.userName()}.png`,
           email: faker.internet.email(),
         };
       

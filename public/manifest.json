@@ -1,6 +1,12 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "theme_color": "#3084AA",
+  "background_color": "#418bac",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": ".",
+  "name": "Pokemon Liga CU",
+  "short_name": "LigaCU",
+  "description": "Campeonato Pokemon Liga CU",
   "icons": [
     {
       "src": "favicon.ico",
@@ -17,9 +23,5 @@
       "type": "image/png",
       "sizes": "512x512"
     }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  ]
 }

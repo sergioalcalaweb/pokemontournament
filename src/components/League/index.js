@@ -26,7 +26,7 @@ const League = () => {
           <Tab label="Jornadas"/>
         </Tabs>
       </AppBar>
-      { value === 0 && <Positions />}
+      { value === 0 && (<Positions />)}
       { value === 1 && <Schedules />}
     </React.Fragment>
   )

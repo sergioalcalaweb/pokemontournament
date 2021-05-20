@@ -2,8 +2,10 @@ import { useFirestore, useFirestoreCollectionData, useFirestoreDocData } from "r
 import generator from 'tournament-generator';
 
 const useTournament = (id) => {
+
+  const firestore = useFirestore();
   
-  const tournamentRef = useFirestore()
+  const tournamentRef = firestore
     .collection('tournaments')
     .doc(id)   
     
@@ -12,7 +14,8 @@ const useTournament = (id) => {
   const { data: participants } =  useFirestoreCollectionData(
                                     tournamentRef
                                     .collection('participants')
-                                    .orderBy('points', 'desc'), 
+                                    .orderBy('points', 'desc')
+                                    .orderBy('pct', 'desc'), 
                                     { idField: "id" }
                                   );
   const { data: matchs } =  useFirestoreCollectionData(
@@ -71,15 +74,25 @@ const useTournament = (id) => {
       awayNewPoints += 1;
     }
 
+    const totalWin = (detail.participantsCount - 1) * 4;  
+
+    const looseHome = totalWin - homeNewWin;
+    const PCThome = homeNewWin / (homeNewWin + looseHome);
+
+    const looseAway = totalWin - awayNewWin;
+    const PCTaway = awayNewWin / (awayNewWin + looseAway);
+
     await homeFB.ref.update({
       points:homeNewPoints,
       win: homeNewWin,
+      pct:PCThome.toFixed(3),
       updatedAt: new Date()
     })
 
     await awayFB.ref.update({
       points:awayNewPoints,
       win: awayNewWin,
+      pct:PCTaway.toFixed(3),
       updatedAt: new Date()
     })
   } 

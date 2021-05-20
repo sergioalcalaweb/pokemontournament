@@ -1,25 +1,25 @@
 import React from 'react'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
-import firebase from 'firebase/app'
 import { Typography } from '@material-ui/core'
+import { useAuth } from 'reactfire'
 
-const firebaseAuthConfig = {
-  signInFlow: 'popup',  
-  signInOptions: [
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID
-  ],
-  signInSuccessUrl: '/',
-  credentialHelper: 'none',
-}
 
 const FirebaseAuth = () => {
-
+  const auth = useAuth;
+  const firebaseAuthConfig = {
+    signInFlow: 'popup',  
+    signInOptions: [
+      auth.GoogleAuthProvider.PROVIDER_ID
+    ],
+    signInSuccessUrl: '/',
+    credentialHelper: 'none',
+  }
   return (
     <React.Fragment>
       <Typography component="h1">Bienvenido Entrenador</Typography>
       <StyledFirebaseAuth
         uiConfig={firebaseAuthConfig}
-        firebaseAuth={firebase.auth()}
+        firebaseAuth={auth()}
       />
     </React.Fragment>
   )

@@ -6,6 +6,7 @@ import Image from '../Image'
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Logo from "../../assets/logo.png";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Loading from '../Loading';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,8 +39,7 @@ const Header = () => {
 
   const signOut = async () => {
     handleClose();
-    await auth.signOut();
-    history.push('/login');
+    await auth.signOut();    
   };
 
   const goProfile = () => {
@@ -55,8 +55,12 @@ const Header = () => {
     history.goBack();
   };
 
+  if(!user) {
+    return ( <Loading />);
+  }
+
   return (
-    <AppBar className={classes.appBar} elevation={0} position="static">
+    <AppBar className={classes.appBar} elevation={0} position='sticky'>
       <Toolbar>
         { pathname !== '/home' && (
           <IconButton onClick={goBack} edge="start" color="inherit" aria-label="menu">

@@ -1,4 +1,4 @@
-import { AppBar, ButtonBase, LinearProgress, makeStyles, Toolbar } from '@material-ui/core';
+import { AppBar, Box, ButtonBase, LinearProgress, makeStyles, Toolbar } from '@material-ui/core';
 import React from 'react';
 import Image from '../Image';
 import Logo from "../../assets/logo.png";
@@ -17,10 +17,10 @@ const useStyles = makeStyles((theme) => ({
 
 const Loading = () => {
 
-  const classes = useStyles();
+  const classes = useStyles();    
 
-  return (    
-    <React.Fragment>
+  return (   
+    <>      
       <AppBar className={classes.appBar} elevation={0} position="static">
         <Toolbar>
           <div className={classes.title}>
@@ -30,9 +30,11 @@ const Loading = () => {
           </div>          
         </Toolbar>
       </AppBar>
-      <LinearProgress />    
-
-    </React.Fragment>
+      {/* clipPath:'polygon(0 30px, 0 100%, 100% 100%, 100% 0, 30px 0)' */}
+      <Box minHeight='calc(100vh - 64px)'  style={{ background:'#ECEFF6'}}>
+        <LinearProgress />            
+      </Box>
+    </> 
   )
 }
 

@@ -23,11 +23,13 @@
     "reactfire": "^3.0.0-rc.0",
     "sports-schedule-generator": "^0.0.5",
     "tournament-generator": "^1.2.0",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "workbox-build": "^6.1.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy": "react-scripts build && node sw-generator.js && node -e \"console.log('sw done')\" && firebase deploy",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

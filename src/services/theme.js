@@ -14,6 +14,14 @@ const theme = createMuiTheme({
       main: red.A400,
     },
   },  
+  overrides: {    
+    MuiFab: {
+      extended: {
+        // borderRadius: 0,
+        // clipPath:'polygon(0 40%, 0 100%, 100% 100%, 100% 0, 15% 0)',        
+      },
+    },
+  },
   typography: {    
     subtitle1: {
       fontSize: 30,

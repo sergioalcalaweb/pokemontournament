@@ -7,7 +7,6 @@ import FirebaseAuth from '../components/FirebaseAuth'
 
 const useStyles = makeStyles( theme => ({
   root: {    
-    background:'linear-gradient(90deg, rgba(48,158,185,1) 0%, rgba(48,102,152,1) 100%);',
     height:"100vh"
   }
 }));
@@ -24,23 +23,32 @@ const Login = () => {
         width="100%" 
         height="100%" 
         display="flex"
-        flexDirection="row">
+        flexDirection={{ xs:"column", md:"row" }} >
           <Box              
             flexGrow={1}
-            height="100%"
+            height={{ xs:"50%", md:"100%" }}
             display="flex"
             flexDirection="column"
-            justifyContent="center"
+            justifyContent={{ xs:"flex-start", md:"center" }}
             alignItems="center"
             >              
               <Image path={Logo} />          
           </Box>
           <Box
             flexGrow={1}
+            component={Paper}
+            elevation={5}
+            height={{ xs:"40%", md:"100%" }}
+            display='flex'
+            flexDirection='column'            
+            alignItems='center'
+            justifyContent='center'
+            position='relative'
+            top={{ xs:"-20%", md: 0 }}
+            width={{ xs:"80%", md:"auto" }}
+            margin={{ xs:"0 auto" }}
             >
-            <Paper style={{ height:'100%', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center' }}>                
-              <FirebaseAuth /> 
-            </Paper>
+              <FirebaseAuth />         
           </Box>
       </Box>
     </Container>

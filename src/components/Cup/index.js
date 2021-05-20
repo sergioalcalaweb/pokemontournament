@@ -1,4 +1,4 @@
-import { Box, ButtonBase, Container, makeStyles, Paper, Typography } from '@material-ui/core'
+import { Box, ButtonBase, Container, Fade, makeStyles, Paper, Typography } from '@material-ui/core'
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import useTournament from '../../hooks/useTournament';
@@ -122,46 +122,50 @@ const Cup = ({showNotification}) => {
   const handleClose = () => setOpen(false);
 
   return (
-    <Container style={{ marginTop: '2rem' }}>
-      <Typography>{detail.title}</Typography>
-      <Box component={Paper} mt={2} className={classes.root}>
-          {
-            days.map( day => (
-              <Box key={day} className={classes.games}>
-                {tournamentGames[`${day}`].map( (match, index) => (
-                  <Box component={ButtonBase} onClick={ () => handleClick(match) } key={index} className={classes.match}>
-                    <Typography>{match.homeTeam}</Typography>
-                    <Typography>VS</Typography>
-                    <Typography>{match.awayTeam}</Typography>
+    <Container>
+      <Fade in timeout={{appear: 600, enter: 500}}>
+        <Box paddingTop={5} paddingBottom={5}>
+          <Typography variant='subtitle1'>{detail.title}</Typography>
+          <Box component={Paper} className={classes.root}>
+              {
+                days.map( day => (
+                  <Box key={day} className={classes.games}>
+                    {tournamentGames[`${day}`].map( (match, index) => (
+                      <Box component={ButtonBase} onClick={ () => handleClick(match) } key={index} className={classes.match}>
+                        <Typography>{match.homeTeam}</Typography>
+                        <Typography>VS</Typography>
+                        <Typography>{match.awayTeam}</Typography>
+                      </Box>
+                    ))}
                   </Box>
-                ))}
-              </Box>
-            ))
-          }
-          {
-            missings().map( day => (
-              <Box key={day} className={classes.games}>          
-                { day.map( match => (
-                  <Box component={ButtonBase} key={match}  className={classes.match}>              
-                    <Typography>Por Definir</Typography>              
+                ))
+              }
+              {
+                missings().map( day => (
+                  <Box key={day} className={classes.games}>          
+                    { day.map( match => (
+                      <Box component={ButtonBase} key={match}  className={classes.match}>              
+                        <Typography>Por Definir</Typography>              
+                      </Box>
+                    ) ) }
                   </Box>
-                ) ) }
+                ) )
+              }
+              <Box display='flex' flexDirection='column' textAlign='center' justifyContent='center' ml={2} pr={2}>
+                <Box className={classes.trophy}>
+                  <Image path={Trofeo} style={{ width:'100px' }} />
+                </Box>
+                { detail.winner && (
+                  <Box className={classes.winner}>
+                    <Typography className={classes.winTitle}>GANADOR</Typography>
+                    <Typography className={classes.winName}>{ detail.winner }</Typography>
+                  </Box>
+                ) }
               </Box>
-            ) )
-          }
-          <Box display='flex' flexDirection='column' textAlign='center' justifyContent='center' ml={2} pr={2}>
-            <Box className={classes.trophy}>
-              <Image path={Trofeo} style={{ width:'100px' }} />
-            </Box>
-            { detail.winner && (
-              <Box className={classes.winner}>
-                <Typography className={classes.winTitle}>GANADOR</Typography>
-                <Typography className={classes.winName}>{ detail.winner }</Typography>
-              </Box>
-            ) }
           </Box>
-      </Box>
-      { match && (<MatchCupResult match={match} open={open} onClose={handleClose} onSave={handleSave} />)}
+          { match && (<MatchCupResult match={match} open={open} onClose={handleClose} onSave={handleSave} />)}
+        </Box>
+      </Fade>
     </Container>
   )
 }

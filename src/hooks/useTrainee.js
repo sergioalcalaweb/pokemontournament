@@ -4,8 +4,10 @@ import { useUser, useFirestore, useFirestoreDocData, useFirestoreCollectionData 
 
 const useTrainee = () => {
 
+  const firestore = useFirestore();
+
   const { data: userAuth } = useUser();
-  const userDetailsRef = useFirestore()
+  const userDetailsRef = firestore
     .collection('users')
     .doc(userAuth.uid);
 

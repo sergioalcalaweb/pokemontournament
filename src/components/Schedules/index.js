@@ -1,9 +1,10 @@
-import { Avatar, Box, Container, Divider, List, ListItem, ListItemText, ListSubheader, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Avatar, Box, Container, Divider, Fade, List, ListItem, ListItemText, ListSubheader, makeStyles, Paper, Typography } from '@material-ui/core';
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import _ from 'lodash';
 import MatchResult from '../MatchResult';
 import useTournament from '../../hooks/useTournament';
+import useTrainee from '../../hooks/useTrainee';
 
 const styles = makeStyles( (theme) => ({
   match:{
@@ -16,7 +17,8 @@ const styles = makeStyles( (theme) => ({
     }
   },
   subHeader: {
-    fontSize:'1.1rem'
+    fontSize:'1.1rem',
+    top:'64px'
   },
   home: {
     display:'flex',
@@ -77,6 +79,7 @@ const Schedules = () => {
 
   const { id } = useParams();
   const {matchs, updateMatch, participants} = useTournament(id);
+  const { info: user } = useTrainee();
   const [open, setOpen] = useState(false);
   const [match, setMatch] = useState(null);
 
@@ -84,8 +87,8 @@ const Schedules = () => {
   const days = Object.keys(shedules);  
   const userInfo = (pokemonNick) => participants.find( p => p.pokemonNick === pokemonNick );
 
-  const handleMatchClick = (matchInfo) => { 
-    if(!matchInfo.close) {
+  const handleMatchClick = (matchInfo) => {     
+    if(!matchInfo.close && (user.admin || (user.pokemonNick === matchInfo.away || user.pokemonNick === matchInfo.home ))) {
       setMatch(matchInfo);
       setOpen(true);
     }
@@ -96,52 +99,56 @@ const Schedules = () => {
   }
 
   const handleSave = async (match) => {    
-    await updateMatch(match);
     setOpen(false);
+    await updateMatch(match);
   }
 
   return (
-    <Container style={{ marginTop:'2rem' }}>
-      {
-        days.map( (day, index) => (
-          <List component={Paper} square key={index}>
-            <ListSubheader className={classes.subHeader} color='primary'>{`Jornada ${day}`}</ListSubheader>
-            {shedules[`${day}`].map((match,index) => {
-              const homeUser = userInfo(match.home);
-              const awayUser = userInfo(match.away);
+    <Fade in>
+      <Container>
+        <Box py={5}>
+          {
+            days.map( (day, index) => (
+              <List component={Paper} square key={index}>
+                <ListSubheader className={classes.subHeader} color='primary'>{`Jornada ${day}`}</ListSubheader>
+                {shedules[`${day}`].map((match,index) => {
+                  const homeUser = userInfo(match.home);
+                  const awayUser = userInfo(match.away);
 
-              return (<React.Fragment key={index}>
-                <ListItem button onClick={ () => handleMatchClick(match) }>
-                  <ListItemText primary={
-                    <Box className={classes.match}>
-                      <Box className={classes.home}>
-                        <Avatar className={classes.avatar} src={homeUser.photoURL}></Avatar>
-                        <Typography component='p' className={classes.break}>{match.home} </Typography>
-                      </Box>
-                      <Box className={classes.versus}>
-                        { match.homeResult && 
-                          <Typography className={classes.result}>{match.homeResult}</Typography>
-                        }
-                        <Typography>VS</Typography>
-                        { match.homeResult &&                           
-                          <Typography className={classes.result}>{match.awayResult}</Typography>
-                        }
-                      </Box>
-                      <Box className={classes.away}>
-                        <Avatar className={classes.avatar} src={awayUser.photoURL}></Avatar>
-                        <Typography component='p' className={classes.break}>{match.away} </Typography>
-                      </Box>
-                    </Box>
-                  }  />
-                </ListItem>
-                <Divider />
-              </React.Fragment>)
-            })}
-          </List>
-        ) )
-      }
-      { match && (<MatchResult match={match} open={open} onClose={handleClose} onSave={handleSave} />)}
-    </Container>
+                  return (<React.Fragment key={index}>
+                    <ListItem button onClick={ () => handleMatchClick(match) }>
+                      <ListItemText primary={
+                        <Box className={classes.match}>
+                          <Box className={classes.home}>
+                            <Avatar className={classes.avatar} src={homeUser.photoURL}></Avatar>
+                            <Typography component='p' className={classes.break}>{match.home} </Typography>
+                          </Box>
+                          <Box className={classes.versus}>
+                            { match.close && 
+                              <Typography className={classes.result}>{match.homeResult}</Typography>
+                            }
+                            <Typography>VS</Typography>
+                            { match.close &&                           
+                              <Typography className={classes.result}>{match.awayResult}</Typography>
+                            }
+                          </Box>
+                          <Box className={classes.away}>
+                            <Avatar className={classes.avatar} src={awayUser.photoURL}></Avatar>
+                            <Typography component='p' className={classes.break}>{match.away} </Typography>
+                          </Box>
+                        </Box>
+                      }  />
+                    </ListItem>
+                    <Divider />
+                  </React.Fragment>)
+                })}
+              </List>
+            ) )
+          }
+        </Box>
+        { match && (<MatchResult match={match} open={open} onClose={handleClose} onSave={handleSave} />)}
+      </Container>
+    </Fade>
   )
 }
 

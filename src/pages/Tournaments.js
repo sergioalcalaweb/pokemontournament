@@ -1,7 +1,8 @@
-import { Box, Button, Container, Fab, IconButton, makeStyles, Menu, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core'
+import { Box, Button, Container, Fab, Fade, IconButton, makeStyles, Menu, MenuItem, Paper, Slide, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core'
 import React, { useState } from 'react'
 import AddIcon from '@material-ui/icons/Add';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { useHistory } from "react-router-dom";
 import { withNotification } from "../HOC/Notification";
 import useTrainee from '../hooks/useTrainee';
@@ -71,7 +72,10 @@ const useStyle = makeStyles( theme => ({
   fab: {
     position: 'absolute',
     bottom: theme.spacing(2),
-    right: theme.spacing(2),
+    right: theme.spacing(2)
+    // bottom:0,
+    // right:0,
+    // filter:'drop-shadow(1px 3px 3px rgba(0, 0, 0, 0.5))'
   },
   options: {
     display:'flex',
@@ -79,7 +83,7 @@ const useStyle = makeStyles( theme => ({
     alignItems:'center'    
   },
   table : {
-    width: '1000px',
+    width: '600px',
     [theme.breakpoints.up('sm')] : {
       width: '100%'
     }
@@ -135,85 +139,103 @@ const Tournaments = ({showNotification}) => {
 
   return (
     <Container>
-      <Box mt={2} p={{ xs: 0, sm: 2, md: 4 }}>
-        <Typography variant="subtitle2">Torneos</Typography>
-        { tournaments.length > 0 && (
-          <TableContainer component={Paper}>
-            <Table className={classes.table} arial-label='Lista de torneos'>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Nombre</TableCell>
-                  <TableCell>Tipo</TableCell>
-                  <TableCell>Participantes</TableCell>
-                  <TableCell></TableCell>              
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {
-                  tournaments.map( ({title,kind,participantsCount, id, open, finished}) => (
-                    <TableRow key={id}>
-                      <TableCell>{title}</TableCell>
-                      <TableCell>{kind}</TableCell>
-                      <TableCell>{participantsCount}</TableCell>
-                      <TableCell align='center' className={classes.options}>
-                        { (open && !finished && !submitting && !userInTorurnament(id)) && (                                            
-                          <Button 
-                            onClick={ () => suscribe(id, kind, participantsCount)}
-                            variant="outlined"
-                            color='primary'>inscribirme</Button>
-                        ) }
-                        { (!submitting && !finished && userInTorurnament(id))&& (
-                          <Typography>Inscrito</Typography>
-                        ) }
-                        { (!open && !submitting && !finished && !userInTorurnament(id)) && (
-                          <Typography>No disponible</Typography>
-                        ) }
-                        { finished && !submitting && (
-                          <Typography>Finalizó</Typography>
-                        ) }
-                        { submitting && (
-                          <Typography>Un momento...</Typography>
-                        ) }
-                        { user.admin && (                       
-                          <IsolatedMenu 
-                            open={open} 
-                            finished={finished}  
-                            id={id}
-                            participants={participantsCount}
-                            kind={kind}
-                            addDemo={addDemoTournament}
-                            onClose={closeTournament}  
-                            onOpen={openTournament} 
-                            onDelete={deleteTournament}                  
-                          />    
-                        ) }
-                      </TableCell>              
+      <Fade in timeout={{appear: 600, enter: 500}}>          
+        <Box paddingTop={5}>
+          <Typography variant="subtitle1">Torneos</Typography>
+          { tournaments.length > 0 && (
+            <Fade in timeout={{enter: 800}}>
+              <TableContainer component={Paper}>
+                <Table className={classes.table} arial-label='Lista de torneos'>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Nombre</TableCell>
+                      <TableCell>Tipo</TableCell>
+                      <TableCell>Participantes</TableCell>
+                      <TableCell></TableCell>              
                     </TableRow>
-                  ))
-                }
-              </TableBody>
-            </Table>
-          </TableContainer>
-        ) }
-        {
-          tournaments.length === 0 && (
-            <Box textAlign='center'>
-              <Typography>No hay torneos disponibles</Typography>
-            </Box>
-          )
-        }
-        {
-          user.admin && (
-            <Fab
-              onClick={() => history.push('/torneo')} 
-              className={classes.fab} 
-              color="secondary" 
-              aria-label="add">
-              <AddIcon />
-            </Fab>
-          )
-        }
-      </Box>
+                  </TableHead>
+                  <TableBody>
+                    {
+                      tournaments.map( ({title,kind,participantsCount, id, open, finished}) => (
+                        <TableRow key={id}>
+                          <TableCell>{title}</TableCell>
+                          <TableCell>{kind}</TableCell>
+                          <TableCell>{participantsCount}</TableCell>
+                          <TableCell className={classes.options}>
+                            { (open && !finished && !submitting && !userInTorurnament(id)) && (                                            
+                              <Button 
+                                onClick={ () => suscribe(id, kind, participantsCount)}
+                                variant="outlined"
+                                color='primary'>inscribirme</Button>
+                            ) }
+                            { (!submitting && !finished && userInTorurnament(id))&& (
+                              <Typography>Inscrito</Typography>
+                            ) }
+                            { (!open && !submitting && !finished && !userInTorurnament(id)) && (
+                              <Typography>No disponible</Typography>
+                            ) }
+                            { finished && !submitting && (
+                              <Typography>Finalizó</Typography>
+                            ) }
+                            { submitting && (
+                              <Typography>Un momento...</Typography>
+                            ) }
+                            { user.admin && (                       
+                              <Box display='flex'>
+                                <IsolatedMenu 
+                                  open={open} 
+                                  finished={finished}  
+                                  id={id}
+                                  participants={participantsCount}
+                                  kind={kind}
+                                  addDemo={addDemoTournament}
+                                  onClose={closeTournament}  
+                                  onOpen={openTournament} 
+                                  onDelete={deleteTournament}                  
+                                />  
+                                {!open && (
+                                  <Button 
+                                    color='primary' 
+                                    endIcon={<KeyboardArrowRightIcon />}
+                                    onClick={ () => history.push(`/mistorneos/${id}`) }
+                                    >Ver</Button>
+                                )}
+                              </Box>
+                            ) }
+                          </TableCell>              
+                        </TableRow>
+                      ))
+                    }
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Fade>
+          ) }
+          {
+            tournaments.length === 0 && (
+              <Box textAlign='center'>
+                <Typography>No hay torneos disponibles</Typography>
+              </Box>
+            )
+          }
+        </Box>
+      </Fade>
+      {
+        user.admin && (
+          <Slide in direction='up' timeout={400}>
+            <div className={classes.fab} >
+              <Fab
+                onClick={() => history.push('/torneo')}                 
+                color="secondary" 
+                variant='extended'
+                aria-label="add">
+                <AddIcon />
+                Agregar
+              </Fab>
+            </div>
+          </Slide>
+        )
+      }
     </Container>
   )
 }
