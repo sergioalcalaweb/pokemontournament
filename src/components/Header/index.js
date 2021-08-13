@@ -1,12 +1,17 @@
-import { AppBar, Avatar, Badge, ButtonBase, IconButton, makeStyles, Menu, MenuItem, Toolbar } from '@material-ui/core'
-import React, { useState } from 'react'
+import { AppBar, Avatar,  ButtonBase, IconButton, makeStyles, Menu, MenuItem, Toolbar } from '@material-ui/core'
+import React, { useContext, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
-import { useAuth, useUser } from 'reactfire';
+import { messaging, useAuth, useUser } from 'reactfire';
 import Image from '../Image'
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import Logo from "../../assets/logo.png";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+import Brightness7Icon from '@material-ui/icons/Brightness7';
 import Loading from '../Loading';
+import Install from '../Install';
+import { AppContext } from '../../context/AppContext';
+import Notifications from '../Notifications';
+import BasicNotifications from '../BasicNotifications';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,13 +26,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Header = () => {
-
+  const { dark, toggle } = useContext(AppContext);
   const classes = useStyles();
   const { data: user } = useUser();
   const auth = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   let history = useHistory();
-  const { pathname } = useLocation();
+  const { pathname } = useLocation();  
+
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -72,13 +78,14 @@ const Header = () => {
             <Image path={Logo} style={{ width:'60px' }} />
           </ButtonBase>
         </div>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={0} color="error">
-            <NotificationsIcon />
-          </Badge>
+        <IconButton onClick={toggle} aria-label="Mod oscuro" color="inherit">
+          { dark ? <Brightness7Icon /> : <Brightness4Icon /> }
         </IconButton>
+        { messaging.isSupported() && <Notifications /> }
+        { !messaging.isSupported() && <BasicNotifications /> }        
+        <Install />
         <IconButton
-          aria-label="account of current user"
+          aria-label="mi cuenta"
           aria-controls="menu-appbar"
           aria-haspopup="true"            
           color="inherit"

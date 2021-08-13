@@ -7,7 +7,8 @@ import FirebaseAuth from '../components/FirebaseAuth'
 
 const useStyles = makeStyles( theme => ({
   root: {    
-    height:"100vh"
+    height:"100vh",
+    background:'linear-gradient(90deg, rgba(48,158,185,1) 0%, rgba(48,102,152,1) 100%)',
   }
 }));
 

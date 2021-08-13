@@ -1,13 +1,14 @@
-import { useFirestore, useFirestoreCollectionData, useFirestoreDocData } from "reactfire";
+import { useFirestore, useFirestoreCollectionData, useFirestoreDocData, useFunctions } from "reactfire";
 import generator from 'tournament-generator';
 
 const useTournament = (id) => {
 
+  const functions = useFunctions();
   const firestore = useFirestore();
   
   const tournamentRef = firestore
     .collection('tournaments')
-    .doc(id)   
+    .doc(id);   
     
   const { data: detail } =  useFirestoreDocData(tournamentRef);
   
@@ -18,6 +19,19 @@ const useTournament = (id) => {
                                     .orderBy('pct', 'desc'), 
                                     { idField: "id" }
                                   );
+  const { data: rules } =  useFirestoreCollectionData(
+                              tournamentRef
+                              .collection('rules'),
+                              { idField: "id" }
+                            );
+  const { data: topic } =  useFirestoreDocData(tournamentRef.collection('rules').doc('topic'));                       
+
+  const { data: participantsCup } =  useFirestoreCollectionData(
+                                      tournamentRef
+                                      .collection('participants'), 
+                                      { idField: "id" }
+                                    );       
+
   const { data: matchs } =  useFirestoreCollectionData(
                               tournamentRef
                               .collection('matchs')
@@ -122,6 +136,7 @@ const useTournament = (id) => {
         await tournamentRef.update({
           winner: whoWin,
           finished: true,
+          started: false,
           updatedAt: new Date()
         })
       } else {
@@ -154,15 +169,83 @@ const useTournament = (id) => {
     }
 
   }
-  
+
+  const finish = () => {
+    return tournamentRef.update({      
+      finished: true,
+      started: false,
+      updatedAt: new Date()
+    })
+  }
+
+  const addRule = (topicID, day) => {
+    return tournamentRef.collection('rules').add({      
+      day,
+      topicID,
+      updatedAt: new Date()
+    })
+  }
+
+  const addTopic = (topic) => {
+    const { updatedAt, timestamp, id, ...info } = topic;
+    return tournamentRef.collection('rules').doc('topic').set({      
+      ...info,
+      timestamp: new Date(),
+      updatedAt: new Date()
+    });
+  }
+
+  const sendNotification = (info) => {
+    const openDay = functions.httpsCallable('dayOpen');
+    return openDay(info)
+  }
+
+  const updateDay = (day, open) => {    
+    const gameDay = open ? detail.day + 1 : detail.day - 1;
+    return tournamentRef.update({
+      day:gameDay,
+      updatedAt: new Date()
+    });
+  }
+
+  const deleteParticipant = async (trainee) => {
+    console.log(trainee);
+    await tournamentRef.collection('participants').doc(trainee.id).delete();
+    const userTournament = await firestore.collection('users')
+          .doc(trainee.userID)
+          .collection('tournaments')
+          .where('tournamentId', '==', id)
+          .limit(1)
+          .get();
+
+    const idTournament = userTournament.docs[0].id;
+    await firestore.collection('users')
+          .doc(trainee.userID)
+          .collection('tournaments')
+          .doc(idTournament)
+          .delete();
+
+    await tournamentRef.update({
+      participantsCount:detail.participantsCount - 1
+    })
+  }
   
   return {
+    addTopic,
+    addRule,
     detail,
     games,
     matchs,
+    finish,
     participants,
     updateMatch,
     updateCupMatch,
+    participantsCup,
+    rules,
+    topic,
+    updateDay,
+    deleteParticipant,
+    sendNotification,
   }
 }
 

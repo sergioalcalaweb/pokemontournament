@@ -1,9 +1,9 @@
-import { Box, Container, Fade, List, ListItem, ListItemAvatar, ListItemText, Paper,  Slide,  Typography } from '@material-ui/core'
+import { Box, Button, Container, Fade, List, ListItem, ListItemAvatar, ListItemText, Paper,  Slide,  Typography } from '@material-ui/core'
 import React from 'react'
 import { useHistory } from "react-router-dom";
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import Battle from '../assets/battle.png'
-import Cup from '../assets/cup.png'
+import Battle from '../assets/tournaments/Battle_League_Great.png'
+import Cup from '../assets/tournaments/GO_Battle_League.png'
 import Image from '../components/Image'
 import useTrainee from '../hooks/useTrainee';
 import useTournaments from '../hooks/useTournaments';
@@ -34,7 +34,7 @@ const MyTournaments = () => {
                       <Slide in key={id} >
                         <ListItem  button onClick={ () => handleClick(id,open) } >
                           <ListItemAvatar>
-                            <Image path={ kind === 'liga' ? Battle : Cup } alt="Pokemon Cup" style={{ width: 40 }}/>
+                            <Image path={ kind === 'liga' ? Battle : Cup } alt="Pokemon Cup" style={{ width: 40, filter:`grayscale(${ !open ? '0' : '100%'})` }}/>
                           </ListItemAvatar>
                           <ListItemText 
                             id={id} 
@@ -57,8 +57,9 @@ const MyTournaments = () => {
           }
           {
             userTorurnaments.length === 0 && (
-              <Box textAlign='center'>
-                <Typography>No tienes torneos</Typography>
+              <Box component={Paper} p={5} textAlign='center'>
+                <Typography style={{marginBottom:'1rem'}} variant='subtitle2'>No tienes torneos</Typography>
+                <Button onClick={ () => history.push(`/torneos`)} color='primary' variant='outlined'>Ver torneos disponibles</Button>
               </Box>
             )
           }

@@ -40,6 +40,10 @@ const MatchCupResult = ({open, match, onClose, onSave }) => {
                 value: 0,
                 message: 'El valor minimo es 0'
               },
+              max:{
+                value: 4,
+                message: 'El valor maximo posible es 4'
+              },
               valueAsNumber: true,
             })}
             helperText={errors.homeResult ? errors.homeResult.message :'Local'}                
@@ -58,6 +62,10 @@ const MatchCupResult = ({open, match, onClose, onSave }) => {
               min:{
                 value: 0,
                 message: 'El valor minimo es 0'
+              },
+              max:{
+                value: 4,
+                message: 'El valor maximo posible es 4'
               },
               valueAsNumber: true,
             })}             

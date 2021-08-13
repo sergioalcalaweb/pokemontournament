@@ -1,4 +1,4 @@
-import { Box, Button, Container, Fab, Fade, IconButton, makeStyles, Menu, MenuItem, Paper, Slide, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core'
+import { Backdrop, Box, Button, CircularProgress, Container, Fab, Fade, IconButton, makeStyles, Menu, MenuItem, Paper, Slide, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core'
 import React, { useState } from 'react'
 import AddIcon from '@material-ui/icons/Add';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 import { withNotification } from "../HOC/Notification";
 import useTrainee from '../hooks/useTrainee';
 import useTournaments from '../hooks/useTournaments';
+import DialogParticipants from '../components/DialogParticipants';
 
 
 const IsolatedMenu = props => {
@@ -55,6 +56,12 @@ const IsolatedMenu = props => {
             props.addDemo(props.id, props.participants, props.kind);
           }}>Participantes DEMO</MenuItem>          
         )}
+        { (props.open && !props.finished) && (
+          <MenuItem onClick={() => {
+            setAnchorEl(null);          
+            props.showParticipants(props.id);
+          }}>Ver Participantes</MenuItem>          
+        )}
         { (!props.open && !props.finished) && 
           <MenuItem onClick={() => {
             setAnchorEl(null);   
@@ -69,13 +76,14 @@ const IsolatedMenu = props => {
 
 
 const useStyle = makeStyles( theme => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
   fab: {
-    position: 'absolute',
+    position: 'fixed',
     bottom: theme.spacing(2),
     right: theme.spacing(2)
-    // bottom:0,
-    // right:0,
-    // filter:'drop-shadow(1px 3px 3px rgba(0, 0, 0, 0.5))'
   },
   options: {
     display:'flex',
@@ -92,49 +100,91 @@ const useStyle = makeStyles( theme => ({
 
 const Tournaments = ({showNotification}) => {  
 
-  let history = useHistory();
+  const history = useHistory();  
   const classes = useStyle();
   const [submitting, setSubmitting] = useState(false);
+  const [dialog, setDialog] = useState({
+    opne: false,
+    id: null
+  });
   const {info: user, tournaments: userTournaments, addTournament, deleteTorunament} = useTrainee();
   const { all: tournaments, erase, open, close, addTrainee, addDemoParticipants} = useTournaments()
 
   const userInTorurnament = (tID) => userTournaments.find( t => t.tournamentId === tID);
 
   const addDemoTournament = async (id, participants, kind) => {
-    setSubmitting(true);
-    await addDemoParticipants(kind,id, participants);
-    showNotification('Listo participantes agregados');
-    setSubmitting(false);
+    try {
+      setSubmitting(true);
+      await addDemoParticipants(kind,id, participants);
+      showNotification('Listo participantes agregados');
+      setSubmitting(false);      
+    } catch (error) {
+      setSubmitting(false);
+    }
   }
 
   const openTournament = async (id) => {
-    setSubmitting(true);
-    await open(id);
-    showNotification('Listo torneo abierto a inscripciones');
-    setSubmitting(false);
+    try {
+      setSubmitting(true);
+      await open(id);
+      showNotification('Listo torneo abierto a inscripciones');
+      setSubmitting(false);
+    } catch (error) {
+      setSubmitting(false);
+    }
   }
 
   const deleteTournament = async (id) => {
-    setSubmitting(true);
-    await deleteTorunament(id);
-    await erase(id);
-    showNotification('Listo torneo eliminado');
-    setSubmitting(false);
+    try {
+      setSubmitting(true);
+      await deleteTorunament(id);
+      await erase(id);
+      showNotification('Listo torneo eliminado');
+      setSubmitting(false);      
+    } catch (error) {
+      setSubmitting(false);
+    }
   }
 
   const closeTournament = async (id, kind) => {
-    setSubmitting(true);
-    await close(id, kind);
-    showNotification('Listo torneo cerrado para inscripciones');
-    setSubmitting(false);
+    try {
+      setSubmitting(true);
+      await close(id, kind);
+      showNotification('Listo torneo cerrado para inscripciones');
+      setSubmitting(false);      
+    } catch (error) {
+      setSubmitting(false);
+    }
   }
 
-  const suscribe = async (id, type, participants) => {    
-    setSubmitting(true);
-    await addTournament(id);    
-    await addTrainee(user,type, id, participants)
-    showNotification('Listo ya estas registrado');
-    setSubmitting(false);
+  const suscribe = async (id, type, participants) => {        
+    try {
+      if(user.pokemonNick) {
+        setSubmitting(true);
+        await addTournament(id);    
+        await addTrainee(user, type, id, participants);        
+        showNotification('Listo ya estas registrado');
+        setSubmitting(false);
+      } else {
+        showNotification('Necesitas tener datos de pokemon go antes de inscribirte', 'info');      
+      }      
+    } catch (error) {      
+      setSubmitting(false);
+    }
+  }
+
+  const showParticipants = (id) => {    
+    setDialog({
+      open:true,
+      id
+    });
+  }
+
+  const handleClose = () => {
+    setDialog({
+      open:false,
+      id:null
+    });
   }
 
   return (
@@ -156,30 +206,34 @@ const Tournaments = ({showNotification}) => {
                   </TableHead>
                   <TableBody>
                     {
-                      tournaments.map( ({title,kind,participantsCount, id, open, finished}) => (
+                      tournaments.map( ({title,kind,participantsCount, id, open, finished, started}) => (
                         <TableRow key={id}>
                           <TableCell>{title}</TableCell>
                           <TableCell>{kind}</TableCell>
                           <TableCell>{participantsCount}</TableCell>
                           <TableCell className={classes.options}>
-                            { (open && !finished && !submitting && !userInTorurnament(id)) && (                                            
+                            { (open && !finished  && !started && !userInTorurnament(id)) && (                                            
                               <Button 
                                 onClick={ () => suscribe(id, kind, participantsCount)}
                                 variant="outlined"
                                 color='primary'>inscribirme</Button>
                             ) }
-                            { (!submitting && !finished && userInTorurnament(id))&& (
+                            { (!submitting && !finished && !started && userInTorurnament(id))&& (
                               <Typography>Inscrito</Typography>
                             ) }
-                            { (!open && !submitting && !finished && !userInTorurnament(id)) && (
+                            { (!open  && !finished && !started && !userInTorurnament(id)) && (
                               <Typography>No disponible</Typography>
                             ) }
-                            { finished && !submitting && (
+                            { finished  && !started && (
                               <Typography>Finalizó</Typography>
                             ) }
-                            { submitting && (
-                              <Typography>Un momento...</Typography>
-                            ) }
+                            {!open  && started && (
+                              <Button 
+                                color='primary' 
+                                endIcon={<KeyboardArrowRightIcon />}
+                                onClick={ () => history.push(`/mistorneos/${id}`) }
+                                >Ver</Button>
+                            )}
                             { user.admin && (                       
                               <Box display='flex'>
                                 <IsolatedMenu 
@@ -187,19 +241,13 @@ const Tournaments = ({showNotification}) => {
                                   finished={finished}  
                                   id={id}
                                   participants={participantsCount}
+                                  showParticipants={showParticipants}
                                   kind={kind}
                                   addDemo={addDemoTournament}
                                   onClose={closeTournament}  
                                   onOpen={openTournament} 
                                   onDelete={deleteTournament}                  
-                                />  
-                                {!open && (
-                                  <Button 
-                                    color='primary' 
-                                    endIcon={<KeyboardArrowRightIcon />}
-                                    onClick={ () => history.push(`/mistorneos/${id}`) }
-                                    >Ver</Button>
-                                )}
+                                />                                  
                               </Box>
                             ) }
                           </TableCell>              
@@ -211,6 +259,9 @@ const Tournaments = ({showNotification}) => {
               </TableContainer>
             </Fade>
           ) }
+          <Backdrop className={classes.backdrop} open={submitting}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
           {
             tournaments.length === 0 && (
               <Box textAlign='center'>
@@ -220,6 +271,7 @@ const Tournaments = ({showNotification}) => {
           }
         </Box>
       </Fade>
+      <DialogParticipants open={dialog.open} id={dialog.id} onClose={handleClose} />      
       {
         user.admin && (
           <Slide in direction='up' timeout={400}>

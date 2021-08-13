@@ -1,6 +1,7 @@
 import { Box, Button, Container, Fade, FormControl, FormControlLabel, FormHelperText, InputLabel, makeStyles, MenuItem, Paper, Select,  Switch, TextField, Typography } from '@material-ui/core'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { withNotification } from "../HOC/Notification";
 import useTournaments from '../hooks/useTournaments';
 
@@ -18,26 +19,18 @@ const Tournament = ({showNotification})  => {
     register,
     handleSubmit,
     errors, 
-    reset,
     control,
     formState: { isSubmitting } 
   } = useForm();
 
 
   const {create} = useTournaments();
+  let history = useHistory();
 
   const onSubmit = async (formData) => {
-    
-    await create(formData);
-
-    reset({
-      kind: '',
-      title: '',
-      open: false
-    });
-
+    await create({...formData, day:0});
     showNotification('Torneo creado exitosamente');
-    
+    history.push('/torneos');
   }
 
   return (

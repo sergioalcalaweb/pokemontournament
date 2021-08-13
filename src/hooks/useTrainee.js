@@ -10,6 +10,11 @@ const useTrainee = () => {
   const userDetailsRef = firestore
     .collection('users')
     .doc(userAuth.uid);
+  
+  const notificationsRef = firestore
+    .collection('notifications');
+  
+  const { data: notifications } = useFirestoreCollectionData(notificationsRef, { idField: "id" });  
 
     
   const { data: userFirebase } = useFirestoreDocData(userDetailsRef);
@@ -17,14 +22,16 @@ const useTrainee = () => {
     displayName: userAuth.displayName,
     photoURL: userAuth.photoURL,
     email: userAuth.email,
+    id:userAuth.uid,        
     pokemonNick: userFirebase.pokemonNick,    
     pokemonID: userFirebase.pokemonID,
     admin: userFirebase.admin,
-    id:userAuth.uid        
+    devices: userFirebase.devices || [],
   });
+
     
   const usersDetailsRef = useFirestore()
-    .collection('users')
+    .collection('users');
 
   const { data: users } = useFirestoreCollectionData(usersDetailsRef,  { idField: "id" });
 
@@ -34,9 +41,14 @@ const useTrainee = () => {
   const update = async (newInfo) => {
     const userFB = {
       ...info,
-      ...newInfo
+      ...newInfo      
     }
-    await userDetailsRef.update(userFB);
+    if(userAuth.pokemonID) {
+      await userDetailsRef.update(userFB);
+    } else {      
+      userFB.admin = false;
+      await usersDetailsRef.doc(userAuth.uid).set(userFB);
+    }
     setInfo(userFB);
   }
 
@@ -44,9 +56,16 @@ const useTrainee = () => {
     return userTournaments.add({tournamentId});
   }
 
-  const toggleAdmin = (id, admin) => {
+  const toggleAdmin = (id, admin) => {    
     return usersDetailsRef.doc(id).update({
       admin
+    });
+  }
+
+  const addDevice = (device) => {
+    info.devices.push(device);
+    return userDetailsRef.update({
+      devices:info.devices
     });
   }
 
@@ -60,12 +79,14 @@ const useTrainee = () => {
   }
 
   return {
+    addDevice,
     addTournament,
     deleteTorunament,
     info,
     toggleAdmin,
     tournaments,
     update,
+    notifications,
     users,
   }
 }

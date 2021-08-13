@@ -4,24 +4,55 @@ import generator from 'tournament-generator';
 import faker from 'faker';
 
 
-const useTournaments = () => {
+const getTopic = () => {
+  return `notification_${Math.ceil(Math.random() * 10000)}`;
+}
 
-  const firestore = useFirestore();
+const useTournaments = () => {
   
+  const firestore = useFirestore();
   const tournamentsRef = firestore.collection('tournaments');
   const { data: all } = useFirestoreCollectionData(tournamentsRef.orderBy('timestamp', 'desc'), { idField: "id" });  
+
+  const createCupFromLeague = async (players, title) => {
+    
+    const tournament = {
+      kind:'copa',
+      title:`Liguilla - ${title}`,
+      open:false,
+      participantsCount: players.length,
+      gamesCount: 0,
+      finished: false,
+      started:true,
+      topic:getTopic(),
+      timestamp: new Date(),
+      updatedAt: new Date()
+    }
+
+    const participants = players.map( ({email, id, photoURL, pokemonID, pokemonNick, userID}) => ({email, id, photoURL, pokemonID, pokemonNick, userID}) );    
+    const tournamentInfo = await tournamentsRef.add(tournament); 
+    const cupID = tournamentInfo.id;
+    await Promise.all( participants.map( async (trainee, index) => {
+      await addTrainee(trainee, 'copa', cupID, index);
+      if(trainee.pokemonID !== '123412341234') {
+        await firestore.collection('users').doc(trainee.userID).collection('tournaments').add({tournamentId:cupID})
+      }
+    }))
+    return close(cupID, 'copa');    
+  }
   
   const create = (tournamentInfo) => {
-    const torunament = {
+    const tournament = {
       ...tournamentInfo,
       participantsCount: 0,
       gamesCount: 0,
       finished: false,
+      started: false,
+      topic:getTopic(),
       timestamp: new Date(),
       updatedAt: new Date()
     }
-   
-    return tournamentsRef.add(torunament);
+    return tournamentsRef.add(tournament);
   }
 
   const erase = (id) => {
@@ -42,8 +73,7 @@ const useTournaments = () => {
   const close = async (id, kind) => {
     const querySnapshot = await tournamentsRef.doc(id).collection('participants').get();    
     if(querySnapshot.docs.length > 0) {
-      const players = querySnapshot.docs.map( doc => doc.data().pokemonNick);       
-  
+      const players = querySnapshot.docs.map( doc => doc.data().pokemonNick);
       if(kind === 'liga') {        
         const schedules = generateSchedule(players);
         await Promise.all(
@@ -52,6 +82,7 @@ const useTournaments = () => {
                 await tournamentsRef.doc(id).collection('matchs').add({
                   ...match,
                   day:index + 1,
+                  available: false,
                   timestamp: new Date(),
                   updatedAt: new Date()
                 });
@@ -60,26 +91,22 @@ const useTournaments = () => {
         )
       } else {
         const {data: games } = generator(players, { type: 'simple-cup', toBeDefinedValue:'espera' });        
-
         await Promise.all(
           games.map( async (game) => {
             const { id: tag, ...info } = game;            
             const gameData = {
               ...info,
-              tag,
+              tag,              
               timestamp: new Date(),
               updatedAt: new Date()
             };
-
             await tournamentsRef.doc(id).collection('games').add(gameData);
-
             return gameData;
           })
         );
-
       }
-      
-      await tournamentsRef.doc(id).update({open:false});
+
+      await tournamentsRef.doc(id).update({open:false, started: true});
     }
   }
 
@@ -106,19 +133,19 @@ const useTournaments = () => {
         email,
       };
     await tournamentsRef.doc(id).collection('participants').add(participant);
-    await tournamentsRef.doc(id).update({ participantsCount: participants + 1 });
+
+    const queryPlayers = await tournamentsRef.doc(id).collection('participants').get();    
+    await tournamentsRef.doc(id).update({ participantsCount:queryPlayers.docs.length });
   }
 
   const addDemoParticipants = async (type, id, participants) => {
-
     for (let index = 0; index < 7; index++) {
-      
       const participant = type === 'liga' ?
         {
           userID: faker.random.uuid(),
           pokemonNick: faker.internet.userName(),
           pokemonID: '123412341234',
-          photoURL: `https://robohash.org/${faker.internet.userName()}.png`,
+          photoURL: `https://robohash.org/${faker.internet.userName()}`,
           email: faker.internet.email(),
           points:0,
           win:0,
@@ -130,10 +157,9 @@ const useTournaments = () => {
           userID: faker.random.uuid(),
           pokemonNick: faker.internet.userName(),
           pokemonID: '123412341234',
-          photoURL: `https://robohash.org/${faker.internet.userName()}.png`,
+          photoURL: `https://robohash.org/${faker.internet.userName()}`,
           email: faker.internet.email(),
         };
-      
       await tournamentsRef.doc(id).collection('participants').add(participant);
     }
     await tournamentsRef.doc(id).update({ participantsCount: participants + 7 });
@@ -146,7 +172,8 @@ const useTournaments = () => {
     open,
     close,
     addTrainee,
-    addDemoParticipants
+    addDemoParticipants,
+    createCupFromLeague
   }
   
 }

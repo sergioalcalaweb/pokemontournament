@@ -1,12 +1,8 @@
-import './services/firebase';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ThemeProvider } from '@material-ui/styles';
-import theme from './services/theme';
-import FirebaseProvider from './context/Firebase';
 import * as serviceWorker from './serviceWorkerRegistration';
 import { Button, Snackbar } from '@material-ui/core';
 
@@ -37,20 +33,18 @@ const AppRender =  () => {
   }, [])
 
   return (
-    <ThemeProvider theme={theme}>
-      <FirebaseProvider>
-        <App />
-        <Snackbar 
-          open={apppUpdate.newVersion} 
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          message="Hay una nueva version disponible " action={
-          <Button color='secondary' onClick={updateServiceWorker}> Actualizar </Button>
-        } />
-      </FirebaseProvider>
-    </ThemeProvider>
+    <Fragment>
+      <App />
+      <Snackbar 
+        open={apppUpdate.newVersion} 
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        message="Hay una nueva version disponible " action={
+        <Button color='secondary' onClick={updateServiceWorker}> Actualizar </Button>
+      } />
+    </Fragment>
   )
 }
 

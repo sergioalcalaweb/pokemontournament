@@ -1,5 +1,6 @@
 import React from 'react'
-import { FirebaseAppProvider} from 'reactfire';
+import { FirebaseAppProvider } from 'reactfire';
+
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -15,7 +16,7 @@ const config = {
 const FirebaseProvider = ({children}) => {
   return (
     <FirebaseAppProvider firebaseConfig={config} suspense>
-        {children}      
+      {children}      
     </FirebaseAppProvider>
   )
 }

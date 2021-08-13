@@ -30,8 +30,7 @@ const Loading = () => {
           </div>          
         </Toolbar>
       </AppBar>
-      {/* clipPath:'polygon(0 30px, 0 100%, 100% 100%, 100% 0, 30px 0)' */}
-      <Box minHeight='calc(100vh - 64px)'  style={{ background:'#ECEFF6'}}>
+      <Box minHeight='calc(100vh - 64px)'>
         <LinearProgress />            
       </Box>
     </> 

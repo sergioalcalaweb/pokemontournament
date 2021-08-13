@@ -4,8 +4,6 @@ import { useForm } from "react-hook-form";
 import MuiAlert from '@material-ui/lab/Alert';
 import useTrainee from '../../hooks/useTrainee';
 
-
-
 const useStyles = makeStyles( (theme) => ({
   form: {
     marginTop: theme.spacing(1),
@@ -21,16 +19,19 @@ const useStyles = makeStyles( (theme) => ({
   }
 }) );
 
-const Profile = () => {
+const Profile = ({ onSave = null}) => {
   
   const { register, handleSubmit, errors, setValue, formState: { isSubmitting } } = useForm();
   const classes = useStyles();
-  const [open, setOpen ] = useState(false)
-  const { info: user, update } =  useTrainee()
+  const [open, setOpen ] = useState(false);
+  const { info: user, update } =  useTrainee();
   
   const onSubmit = async (formData) => {    
     await update(formData);
     setOpen(true);
+    if(onSave) {
+      onSave();
+    }
   }
   return (
     <Card>
@@ -39,11 +40,11 @@ const Profile = () => {
           <Avatar alt={user.displayName} src={user.photoURL} />
         }
         title={user.displayName}
+        subheader={user.email}
       />
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <CardContent>
             <Typography>Mis Datos de Pokémon GO</Typography>
-            
             <div className={classes.form}>
               <TextField 
                 error={!!errors.pokemonID}

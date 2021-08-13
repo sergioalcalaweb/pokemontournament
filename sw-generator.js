@@ -31,7 +31,17 @@ const buildSW = () => {
       {
         urlPattern: new RegExp('https://robohash.org/.*'),
         handler: 'CacheFirst',
-      }
+        options: {
+          cacheName: 'avatars',
+        },
+      },
+      {
+        urlPattern: new RegExp('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/.*'),
+        handler: 'CacheFirst',
+        options: {
+          cacheName: 'pokemons',
+        },
+      }      
     ],
     navigateFallback: '/index.html',
   });

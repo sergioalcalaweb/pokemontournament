@@ -3,24 +3,52 @@ import React from 'react'
 import Image from '../components/Image'
 import { useHistory } from "react-router-dom";
 
-import Pokeball from '../assets/pokeball.webp'
-import colors from "../services/colors";
+
+import first from '../assets/1.png'
+import second from '../assets/2.png'
+import third from '../assets/3.png'
+import fourth from '../assets/4.png'
+import fifth from '../assets/5.png'
+import sixth from '../assets/6.png'
+import {colors} from "../services/colors";
 import Partner from "../assets/partner.png";
 import useTrainee from '../hooks/useTrainee';
+import Welcome from '../components/Welcome';
 
 const sections = [
   {
-    name:'Torneos Pokemon',
+    name:'Torneos',
+    icon: first,
     link: 'torneos',
     admin: false
-  },
+  },  
   {
     name:'Mis Torneos',
+    icon: second,
     link: 'mistorneos',
     admin: false
   },
   {
+    name:'Reglas',
+    icon: third,
+    link: 'reglas',
+    admin: false
+  },
+  {
+    name:'Mi Cuenta',
+    icon: fourth,
+    link: 'perfil',
+    admin: false
+  },
+  {
+    name:'Temáticas',
+    icon: fifth,
+    link: 'tematicas',
+    admin: true
+  },
+  {
     name:'Usuarios',
+    icon: sixth,
     link: 'usuarios',
     admin: true
   }
@@ -31,47 +59,51 @@ const useStyles = makeStyles( (theme) => ({
     display:'flex',
     justifyContent:'space-between'
   },
-  section: {
-    transition:'all 0.2s ease-in-out',
+  section: {    
     position:'relative',
-    height:150,
-    width:350,    
-    overflow:'hidden',
-    borderRadius:'15px',
+    height:145,
+    width:145,            
+    borderRadius:'10px',
     marginBottom:'1rem',
-    boxShadow: theme.shadows[2],
-    '&:hover':{ 
-      boxShadow: theme.shadows[10],
+    boxShadow: theme.shadows[3],    
+    display:'flex',
+    flexDirection:'column',
+    [theme.breakpoints.up('sm')]: {
+      height:280,
+      width:280,      
     }
   },
-  image: {
-    position:'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,    
-    zIndex:0,
-    opacity:0.5
+  image:{
+    width:80,
+    [theme.breakpoints.up('sm')]: {      
+      width:120,      
+    }
+  },
+  sectionContent: {
+    transition:'all 0.2s ease-in-out',
+    width:'100%',
+    height:'100%',    
+    justifyContent:'center',
+    display:'flex',
+    flexDirection:'column',
+    alignItems:'center',
+    '&:hover':{ 
+      transform:'scale(1.1)'
+    },
   },
   sectionTitle: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    fontSize:'2rem',
-    paddingLeft:10,
+    fontSize:'1.2rem',
     color: theme.palette.common.white,
+    [theme.breakpoints.up('sm')]: {      
+      fontSize:'2rem',      
+    }
   },
 }));
 
 const Home = () => {
   const classes = useStyles();
   let history = useHistory();
-  const { info : { admin }} = useTrainee()
+  const { info : { admin, pokemonID }} = useTrainee();
   let filteredSections;
 
   if( !admin  ) {
@@ -82,6 +114,7 @@ const Home = () => {
   
   return (
     <Container>
+      {!pokemonID && <Welcome />}
       <Box textAlign="center" paddingTop={5}>
         <Fade in timeout={500}>
           <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="flex-start">         
@@ -91,6 +124,7 @@ const Home = () => {
         </Fade>
         <Box
           mt={5}
+          mb={5}
           display="flex"
           flexWrap="wrap"
           justifyContent="space-around"
@@ -101,27 +135,27 @@ const Home = () => {
             <Grow in timeout={ index * 500 } key={index}>
               <div>
                 <ButtonBase 
-                  style={{ backgroundColor:`${colors[index]}`}}
+                  style={{ background:`${colors[index]}`}}
                   className={classes.section}                 
                   onClick={ () => history.push(`/${section.link}`) }
                   focusRipple>
-                  <div className={classes.image}>
-                    <Image path={Pokeball} style={{ width:'200px', position:'relative', right:'-130px', bottom:'-10px' }} />
-                  </div>          
-                  <div className={classes.sectionTitle}>
+                  <div className={classes.sectionContent}>
+                    <Image path={section.icon} className={classes.image} />                           
                     <Typography
                       component="span"
                       color="inherit"
-                      variant='subtitle2'              
+                      variant='subtitle1'
+                      className={classes.sectionTitle}              
                     >
                       {section.name}              
-                    </Typography>
+                    </Typography>                    
                   </div>
                 </ButtonBase>
               </div>
             </Grow>
           ) )}
         </Box>
+
       </Box>
     </Container>
   )

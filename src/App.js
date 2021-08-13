@@ -1,11 +1,15 @@
-import React, { Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import { AuthCheck, preloadAuth, preloadFirestore, preloadFirestoreDoc, preloadUser, useFirebaseApp } from 'reactfire';
 import { 
   BrowserRouter as Router, 
 } from "react-router-dom";
-import Login from "./pages/Login";
-import Index from "./pages/Index";
+
 import Loading from "./components/Loading";
+import FirebaseProvider from "./context/Firebase";
+import { AppProvider } from "./context/AppContext";
+
+const Index = lazy( () => import('./pages/Index') );
+const Login = lazy( () => import('./pages/Login') );
 
 
 const preloadSDKs = firebaseApp => {
@@ -13,7 +17,7 @@ const preloadSDKs = firebaseApp => {
     preloadFirestore({
       firebaseApp,
       setup(firestore) {
-        return firestore().enablePersistence();
+        return firestore().enablePersistence({synchronizeTabs:true});
       }
     }),    
     preloadAuth({ firebaseApp })
@@ -29,15 +33,23 @@ const preloadData = async firebaseApp => {
 };
 
 const PreloadApp = ({children}) => {
-
   const firebaseApp = useFirebaseApp();
   preloadSDKs(firebaseApp).then(() => preloadData(firebaseApp));
-
   return ( <>{children}</> )
 } 
-  
+
+
 const App = () => {
+  return (
+    <AppProvider>
+      <FirebaseProvider>
+        <AppContainer />
+      </FirebaseProvider>
+    </AppProvider>
+  )
+}
   
+const AppContainer = () => {
   return (
     <Suspense fallback={<Loading />}>
       <AuthCheck fallback={<Login />}>

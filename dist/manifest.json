@@ -1,0 +1,22 @@
+{
+  "theme_color": "#3084AA",
+  "background_color": "#418bac",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": ".",
+  "name": "Pokemon Liga CU",
+  "short_name": "LigaCU",
+  "description": "Campeonato Pokemon Liga CU",
+  "icons": [
+    {
+      "src": "manifest-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "manifest-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
