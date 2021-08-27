@@ -2,11 +2,13 @@ import { useFirestore, useFirestoreCollectionData } from "reactfire";
 import { generateSchedule } from "sports-schedule-generator";
 import generator from 'tournament-generator';
 import faker from 'faker';
+import { generateTournament } from '../services/tournament'
 
 
 const getTopic = () => {
   return `notification_${Math.ceil(Math.random() * 10000)}`;
 }
+
 
 const useTournaments = () => {
   
@@ -14,7 +16,7 @@ const useTournaments = () => {
   const tournamentsRef = firestore.collection('tournaments');
   const { data: all } = useFirestoreCollectionData(tournamentsRef.orderBy('timestamp', 'desc'), { idField: "id" });  
 
-  const createCupFromLeague = async (players, title) => {
+  const createCupFromLeague = async (players, title, topic) => {
     
     const tournament = {
       kind:'copa',
@@ -22,9 +24,11 @@ const useTournaments = () => {
       open:false,
       participantsCount: players.length,
       gamesCount: 0,
+      day:0,
+      round:0,
       finished: false,
       started:true,
-      topic:getTopic(),
+      topic,
       timestamp: new Date(),
       updatedAt: new Date()
     }
@@ -35,7 +39,7 @@ const useTournaments = () => {
     await Promise.all( participants.map( async (trainee, index) => {
       await addTrainee(trainee, 'copa', cupID, index);
       if(trainee.pokemonID !== '123412341234') {
-        await firestore.collection('users').doc(trainee.userID).collection('tournaments').add({tournamentId:cupID})
+        await firestore.collection('users').doc(trainee.userID).collection('tournaments').add({tournamentId:cupID, topic})
       }
     }))
     return close(cupID, 'copa');    
@@ -46,6 +50,8 @@ const useTournaments = () => {
       ...tournamentInfo,
       participantsCount: 0,
       gamesCount: 0,
+      finals:false,
+      repechage:false,
       finished: false,
       started: false,
       topic:getTopic(),
@@ -73,8 +79,8 @@ const useTournaments = () => {
   const close = async (id, kind) => {
     const querySnapshot = await tournamentsRef.doc(id).collection('participants').get();    
     if(querySnapshot.docs.length > 0) {
-      const players = querySnapshot.docs.map( doc => doc.data().pokemonNick);
       if(kind === 'liga') {        
+        const players = querySnapshot.docs.map( doc => doc.data().pokemonNick);
         const schedules = generateSchedule(players);
         await Promise.all(
           schedules.map( async (matchs, index) => {
@@ -90,13 +96,16 @@ const useTournaments = () => {
             )})
         )
       } else {
-        const {data: games } = generator(players, { type: 'simple-cup', toBeDefinedValue:'espera' });        
+        const players = querySnapshot.docs.map( doc => doc.data() );
+        console.log(players);
+        const {data: matchs } = generator(players, { type: 'simple-cup', toBeDefinedValue:'En espera' });
+        const games = generateTournament(matchs);
+        
         await Promise.all(
           games.map( async (game) => {
-            const { id: tag, ...info } = game;            
+          
             const gameData = {
-              ...info,
-              tag,              
+              ...game,
               timestamp: new Date(),
               updatedAt: new Date()
             };
@@ -110,7 +119,7 @@ const useTournaments = () => {
     }
   }
 
-  const addTrainee = async (trainee, type, id, participants) => {
+  const addTrainee = async (trainee, type, id) => {
     const { pokemonNick, pokemonID, photoURL, email, id: userID } = trainee;
     const participant = type === 'liga' ?
       {

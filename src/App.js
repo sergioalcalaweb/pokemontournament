@@ -8,7 +8,7 @@ import Loading from "./components/Loading";
 import FirebaseProvider from "./context/Firebase";
 import { AppProvider } from "./context/AppContext";
 
-const Index = lazy( () => import('./pages/Index') );
+const Index = lazy( () => import('./pages') );
 const Login = lazy( () => import('./pages/Login') );
 
 

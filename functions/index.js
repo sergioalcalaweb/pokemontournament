@@ -4,7 +4,6 @@ admin.initializeApp();
 
 const db = admin.firestore();
 const IMAGE = "https://firebasestorage.googleapis.com/v0/b/pokemoncu-f6835.appspot.com/o/FCMImages%2Flogo.png?alt=media&token=67c28416-f3b4-4fff-9f01-79ecf7c68e80";
-// const IMAGE = "https://firebasestorage.googleapis.com/v0/b/pokemoncu-f6835.appspot.com/o/logo%20pogo%20cu.jpeg?alt=media&token=37e40e91-d29d-4580-a1ea-486598146fa9";
 
 const sendNotifications = (title, body, link, topic) => {
   const message = {
@@ -49,6 +48,14 @@ const sendNotifications = (title, body, link, topic) => {
   });
 };
 
+const deleteNotification = async (topic, tournament) => {
+  let notificationsTopic = db.collection("notifications").where("topic","==",topic);
+  const notificationsDelete = await notificationsTopic.get();
+  return Promise.all(          
+    notificationsDelete.docs.map( async notification => await notification.ref.delete()  )
+  )
+}
+
 exports.tournamentCreate = functions.firestore
     .document("tournaments/{tournamentID}")
     .onCreate( async (snap, context) => {
@@ -63,10 +70,28 @@ exports.tournamentCreate = functions.firestore
           title,
           body,
           url: link,
-          tournament: id
+          tournament: id,
+          timestamp: new Date(),
+          topic:"all"
         };        
         db.collection("notifications").add(notification);
         sendNotifications(title, body, link, "all");
+
+      } else if (info.started) {
+
+        const title = `${info.title}`;
+        const body = "Los enfrentamientos de la liguilla están disponibles !PREPARATE!";
+        const link = `/mistorneos/${id}`;
+        const notification = {
+          title,
+          body,
+          url: link,
+          tournament: id,
+          timestamp: new Date(),
+          topic:info.topic
+        };        
+        db.collection("notifications").add(notification);
+        sendNotifications(title, body, link, info.topic);
       }
     });
 
@@ -82,16 +107,17 @@ exports.tournamentOpen = functions.firestore
         const title = `Ya puedes inscribirte a ${infoAfter.title}`;
         const body = `Inscribete a la ${infoAfter.kind} y prepara a tus pokemon mas poderosos`;
         const link = "/torneos";
-        const topic = infoAfter.topic;
         const notification = {
           title,
           body,
           url: link,
-          topic
+          tournament: id,
+          topic:"all",
+          timestamp: new Date(),
         };        
         db.collection("notifications").add(notification);
         sendNotifications(title, body, link, "all");
-      } else if (infoAfter.day > !infoBefore.day) {
+      } else if (infoAfter.day > infoBefore.day) {
         const title = `Jornada ${infoAfter.day} lista para jugar`;
         const body = `${infoAfter.title}`;
         const link = `/mistorneos/${id}`;
@@ -100,10 +126,54 @@ exports.tournamentOpen = functions.firestore
           title,
           body,
           url: link,
-          topic
+          tournament: id,
+          topic,
+          timestamp: new Date()
         };        
         db.collection("notifications").add(notification);
         sendNotifications(title, body, link, topic);
+      } else if (infoAfter.repechage && !infoBefore.repechage) {
+        const title = "Repechaje listo para jugar";
+        const body = `${infoAfter.title}`;
+        const link = `/mistorneos/${id}`;
+        const topic = infoAfter.topic;
+        const notification = {
+          title,
+          body,
+          url: link,
+          tournament: id,
+          topic,
+          timestamp: new Date()
+        };        
+        db.collection("notifications").add(notification);
+        sendNotifications(title, body, link, topic);
+      } else if (infoAfter.round > infoBefore.round) {
+
+        let title = "";
+        const games = ["","Cuartos de final listas","Semifinales listas", "La final lista"];
+        if(infoAfter.kind === "liga") {
+          title = `${games[infoAfter.round]} para jugar`
+        }  else {
+          title = "Sieguiente ronda lsita para jugar";
+        }  
+
+        const body = `${infoAfter.title}`;
+        const link = `/mistorneos/${id}`;
+        const topic = infoAfter.topic;
+        const notification = {
+          title,
+          body,
+          url: link,
+          tournament: id,
+          topic,
+          timestamp: new Date()
+        };        
+        db.collection("notifications").add(notification);
+        sendNotifications(title, body, link, topic);
+      }else if ( !infoBefore.finished && infoAfter.finished) {
+        await deleteNotification(infoAfter.topic);        
+      } else if (infoAfter.started && !infoBefore.started) {
+        await deleteNotification("all");   
       }
     });
 

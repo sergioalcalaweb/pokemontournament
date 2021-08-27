@@ -4,7 +4,6 @@ import {
   Route,
   Redirect, } from "react-router-dom";
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
-import Layout from '../components/Layout';
 import Loading from '../components/Loading';
 import useTrainee from '../hooks/useTrainee';
 
@@ -17,6 +16,7 @@ const Tournament = lazy( () => import('./Tournament') );
 const Tournaments = lazy( () => import('./Tournaments') );
 const Users = lazy( () => import('./Users') );
 const Rules = lazy( () => import('./Rules') );
+const Layout = lazy( () => import('../Layout') );
 
 const OnlyAdminroute = ({ children, ...rest }) => {
   const { info:{ admin } } = useTrainee();

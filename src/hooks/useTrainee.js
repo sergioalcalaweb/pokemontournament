@@ -14,7 +14,7 @@ const useTrainee = () => {
   const notificationsRef = firestore
     .collection('notifications');
   
-  const { data: notifications } = useFirestoreCollectionData(notificationsRef, { idField: "id" });  
+  const { data: notifications } = useFirestoreCollectionData(notificationsRef.orderBy('timestamp', 'desc'), { idField: "id" });  
 
     
   const { data: userFirebase } = useFirestoreDocData(userDetailsRef);
@@ -52,8 +52,8 @@ const useTrainee = () => {
     setInfo(userFB);
   }
 
-  const addTournament = (tournamentId) => {
-    return userTournaments.add({tournamentId});
+  const addTournament = (tournamentId, topic) => {
+    return userTournaments.add({tournamentId, topic});
   }
 
   const toggleAdmin = (id, admin) => {    
@@ -64,6 +64,14 @@ const useTrainee = () => {
 
   const addDevice = (device) => {
     info.devices.push(device);
+    return userDetailsRef.update({
+      devices:info.devices
+    });
+  }
+
+  const deleteDevice = (device) => {    
+    const index = info.devices.indexOf(device);
+    info.devices.splice(index, 1);        
     return userDetailsRef.update({
       devices:info.devices
     });
@@ -82,6 +90,7 @@ const useTrainee = () => {
     addDevice,
     addTournament,
     deleteTorunament,
+    deleteDevice,
     info,
     toggleAdmin,
     tournaments,
