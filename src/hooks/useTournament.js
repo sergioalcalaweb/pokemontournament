@@ -1,5 +1,4 @@
 import { useFirestore, useFirestoreCollectionData, useFirestoreDocData, useFunctions } from "reactfire";
-import generator from 'tournament-generator';
 
 const useTournament = (id) => {
 
@@ -41,7 +40,7 @@ const useTournament = (id) => {
   const { data: games } =  useFirestoreCollectionData(
                               tournamentRef
                               .collection('games')
-                              .orderBy('round', 'asc'), 
+                              .orderBy('order', 'asc'), 
                               { idField: "id" }
                             );    
   const { data: repechages } =  useFirestoreCollectionData(
@@ -72,18 +71,28 @@ const useTournament = (id) => {
                           .where('pokemonNick', '==', home)
                           .limit(1)
                           .get();
+
     const homeFB = homeDoc.docs[0];
     const homePoints = homeFB.data().points;
     const homeWin = homeFB.data().win;
+    const homeLose = homeFB.data().lose;
+    let homeSetLose = homeFB.data().setLose;
+    let homeSetTie = homeFB.data().setTie;
+    let homeSetWin = homeFB.data().setWin;
 
     const awayDoc = await tournamentRef
                           .collection('participants')
                           .where('pokemonNick', '==', away)
                           .limit(1)
                           .get();
+
     const awayFB = awayDoc.docs[0];
     const awayPoints = awayFB.data().points;
     const awayWin = awayFB.data().win;
+    const awayLose = awayFB.data().lose;
+    let awaySetLose = awayFB.data().setLose;
+    let awaySetTie = awayFB.data().setTie;
+    let awaySetWin = awayFB.data().setWin;
 
     let homeNewPoints = homePoints;
     let awayNewPoints = awayPoints;
@@ -91,34 +100,48 @@ const useTournament = (id) => {
     let homeNewWin = homeWin + homeResult;
     let awayNewWin = awayWin + awayResult;
 
+    let homeNewLose = 4 - homeResult + homeLose;
+    let awayNewLose = 4 - awayResult + awayLose;
+
     if(homeResult > awayResult) {
-      homeNewPoints += 3;      
+      homeNewPoints += 3;   
+      homeSetWin += 1;  
+      awaySetLose +=1;
     } else if(homeResult < awayResult) {
       awayNewPoints += 3;
+      awaySetWin += 1;
+      homeSetLose +=1;
     } else {
       homeNewPoints += 1;      
       awayNewPoints += 1;
+      homeSetTie += 1;
+      awaySetTie += 1;
     }
 
-    const totalWin = (detail.participantsCount - 1) * 4;  
 
-    const looseHome = totalWin - homeNewWin;
-    const PCThome = homeNewWin / (homeNewWin + looseHome);
+    const PCThome = homeNewWin / (homeNewWin + homeNewLose);
 
-    const looseAway = totalWin - awayNewWin;
-    const PCTaway = awayNewWin / (awayNewWin + looseAway);
+    const PCTaway = awayNewWin / (awayNewWin + awayNewLose);
 
     await homeFB.ref.update({
-      points:homeNewPoints,
+      points: homeNewPoints,
       win: homeNewWin,
-      pct:PCThome.toFixed(3),
+      lose: homeNewLose,
+      setWin: homeSetWin,
+      setTie: homeSetTie,
+      setLose: homeSetLose,
+      pct: PCThome.toFixed(3),
       updatedAt: new Date()
     })
 
     await awayFB.ref.update({
-      points:awayNewPoints,
+      points: awayNewPoints,
       win: awayNewWin,
-      pct:PCTaway.toFixed(3),
+      lose: awayNewLose,
+      setWin: awaySetWin,
+      setTie: awaySetTie,
+      setLose: awaySetLose,
+      pct: PCTaway.toFixed(3),
       updatedAt: new Date()
     })
   } 
@@ -142,6 +165,10 @@ const useTournament = (id) => {
     const homeFB = homeDoc.docs[0];
     const homePoints = homeFB.data().points;
     const homeWin = homeFB.data().win;
+    const homeLose = homeFB.data().lose;
+    let homeSetLose = homeFB.data().setLose;
+    let homeSetTie = homeFB.data().setTie;
+    let homeSetWin = homeFB.data().setWin;
 
     const awayDoc = await tournamentRef
                           .collection('participants')
@@ -152,6 +179,10 @@ const useTournament = (id) => {
     const awayFB = awayDoc.docs[0];
     const awayPoints = awayFB.data().points;
     const awayWin = awayFB.data().win;
+    const awayLose = awayFB.data().lose;
+    let awaySetLose = awayFB.data().setLose;
+    let awaySetTie = awayFB.data().setTie;
+    let awaySetWin = awayFB.data().setWin;
 
     let homeNewPoints = homePoints;
     let awayNewPoints = awayPoints;
@@ -159,94 +190,122 @@ const useTournament = (id) => {
     let homeNewWin = homeWin - homeResult;
     let awayNewWin = awayWin - awayResult;
 
+    let homeNewLose = 4 - homeResult - homeLose;
+    let awayNewLose = 4 - awayResult - awayLose;
+
     if(homeResult > awayResult) {
-      homeNewPoints -= 3;      
+      homeNewPoints -= 3;   
+      homeSetWin -= 1;  
+      awaySetLose -=1;
     } else if(homeResult < awayResult) {
       awayNewPoints -= 3;
+      awaySetWin -= 1;
+      homeSetLose -=1;
     } else {
       homeNewPoints -= 1;      
       awayNewPoints -= 1;
+      homeSetTie -= 1;
+      awaySetTie -= 1;
     }
 
-    const totalWin = (detail.participantsCount - 1) * 4;  
 
-    const looseHome = totalWin - homeNewWin;
-    const PCThome = homeNewWin / (homeNewWin + looseHome);
+    const PCThome = homeNewWin / (homeNewWin + homeNewLose);
 
-    const looseAway = totalWin - awayNewWin;
-    const PCTaway = awayNewWin / (awayNewWin + looseAway);
+    const PCTaway = awayNewWin / (awayNewWin + awayNewLose);
 
     await homeFB.ref.update({
-      points:homeNewPoints,
+      points: homeNewPoints,
       win: homeNewWin,
-      pct:PCThome.toFixed(3),
+      lose: homeNewLose,
+      setWin: homeSetWin,
+      setTie: homeSetTie,
+      setLose: homeSetLose,
+      pct: isNaN(PCThome) ? 0 : PCThome.toFixed(3),
       updatedAt: new Date()
     })
 
     await awayFB.ref.update({
-      points:awayNewPoints,
+      points: awayNewPoints,
       win: awayNewWin,
-      pct:PCTaway.toFixed(3),
+      lose: awayNewLose,
+      setWin: awaySetWin,
+      setTie: awaySetTie,
+      setLose: awaySetLose,
+      pct:isNaN(PCTaway) ? 0 : PCTaway.toFixed(3),
       updatedAt: new Date()
     })
   } 
 
-  const updateCupMatch = async (match) => {
-    const { awayResult, homeResult } = match;
-    await tournamentRef.collection('games').doc(match.id).update({
-      awayResult, 
-      homeResult,
-      updateAt: new Date()
-    });
-    const waitingForResult = games.filter( game => game.round === match.round + 1 && game.customData );    
-    if(waitingForResult.length > 0) {      
-      const nextMatch = waitingForResult.find( game => game.customData.homeTeam === match.tag || game.customData.awayTeam === match.tag )
-      const nextPlayer = nextMatch.customData.homeTeam === match.tag ? 'homeTeam' : 'awayTeam';
-      const whoWin = match.homeResult > match.awayResult ? match.homeTeam : match.awayTeam;      
-      await tournamentRef.collection('games').doc(nextMatch.id).update({
-        [nextPlayer]:whoWin,
-        updatedAt: new Date()
-      })
-    } else {
+  const updateCupMatch = async (info) => {
 
-      const totalMatchs =  games.filter( game => game.round === match.round );            
-      const whoWin = match.homeResult > match.awayResult ? match.homeTeam : match.awayTeam;      
+    const game = games[info.roundIndex];
+    const infoGame = game.seeds[info.setIndex];
+    const home = infoGame.teams[0];
+    const away = infoGame.teams[1];
 
-      if( totalMatchs.length === 1) {        
-        await tournamentRef.update({
-          winner: whoWin,
-          finished: true,
-          started: false,
-          updatedAt: new Date()
-        })
-      } else {
+    game.winner = info.homeResult > info.awayResult ? home : away;      
+    home.score = info.homeResult;
+    away.score = info.awayResult;
 
-        const {data: nextMatchs } = generator(totalMatchs, { type: 'simple-cup', toBeDefinedValue:'espera' });              
-        await Promise.all(        
-          nextMatchs.map( async fixedMatch => {
-            const {awayTeam, homeTeam, id: tag} = fixedMatch;
+    const { id,title, ...data } = game;            
+    await tournamentRef.collection('games').doc(id).update(data);
+    const { score, ...winner } = game.winner;
+    return nextStep(winner, info.roundIndex, infoGame.id, 'games');
+    // const { awayResult, homeResult } = match;
+    // await tournamentRef.collection('games').doc(match.id).update({
+    //   awayResult, 
+    //   homeResult,
+    //   updateAt: new Date()
+    // });
+    // const waitingForResult = games.filter( game => game.round === match.round + 1 && game.customData );    
+    // if(waitingForResult.length > 0) {      
+    //   const nextMatch = waitingForResult.find( game => game.customData.homeTeam === match.tag || game.customData.awayTeam === match.tag )
+    //   const nextPlayer = nextMatch.customData.homeTeam === match.tag ? 'homeTeam' : 'awayTeam';
+    //   const whoWin = match.homeResult > match.awayResult ? match.homeTeam : match.awayTeam;      
+    //   await tournamentRef.collection('games').doc(nextMatch.id).update({
+    //     [nextPlayer]:whoWin,
+    //     updatedAt: new Date()
+    //   })
+    // } else {
+
+    //   const totalMatchs =  games.filter( game => game.round === match.round );            
+    //   const whoWin = match.homeResult > match.awayResult ? match.homeTeam : match.awayTeam;      
+
+    //   if( totalMatchs.length === 1) {        
+    //     await tournamentRef.update({
+    //       winner: whoWin,
+    //       finished: true,
+    //       started: false,
+    //       updatedAt: new Date()
+    //     })
+    //   } else {
+
+    //     const {data: nextMatchs } = generator(totalMatchs, { type: 'simple-cup', toBeDefinedValue:'espera' });              
+    //     await Promise.all(        
+    //       nextMatchs.map( async fixedMatch => {
+    //         const {awayTeam, homeTeam, id: tag} = fixedMatch;
     
-            const isWinHome = homeTeam.awayTeam === whoWin ? whoWin : homeTeam.homeTeam === whoWin ? whoWin : 'espera' ;
-            const isWinAway = awayTeam.awayTeam === whoWin ? whoWin : awayTeam.homeTeam === whoWin ? whoWin : 'espera' ;
+    //         const isWinHome = homeTeam.awayTeam === whoWin ? whoWin : homeTeam.homeTeam === whoWin ? whoWin : 'espera' ;
+    //         const isWinAway = awayTeam.awayTeam === whoWin ? whoWin : awayTeam.homeTeam === whoWin ? whoWin : 'espera' ;
     
-            const info = {
-              awayTeam:isWinAway,
-              homeTeam:isWinHome,
-              tag,
-              round: match.round + 1,
-              customData:{
-                homeTeam:homeTeam.tag,
-                awayTeam:awayTeam.tag
-              },
-              timestamp: new Date(),
-              updatedAt: new Date()
-            } 
-            await tournamentRef.collection('games').add(info);
-          })
-        )
-      }
+    //         const info = {
+    //           awayTeam:isWinAway,
+    //           homeTeam:isWinHome,
+    //           tag,
+    //           round: match.round + 1,
+    //           customData:{
+    //             homeTeam:homeTeam.tag,
+    //             awayTeam:awayTeam.tag
+    //           },
+    //           timestamp: new Date(),
+    //           updatedAt: new Date()
+    //         } 
+    //         await tournamentRef.collection('games').add(info);
+    //       })
+    //     )
+    //   }
       
-    }
+    // }
 
   }
 
@@ -288,7 +347,7 @@ const useTournament = (id) => {
       const { id,title, type, ...data } = final;            
       await tournamentRef.collection(type).doc(id).update(data);
       const { score, ...winner } = final.winner;
-      return nextStep(winner, info.roundIndex, finalGames.id);
+      return nextStep(winner, info.roundIndex, finalGames.id, type);
 
     }
   }
@@ -466,27 +525,52 @@ const useTournament = (id) => {
     return tournamentRef.collection('finals').doc(id).update(info);
   }
 
-  const nextStep = (winner, round, id) => {
-    if(finals.length === round + 1) {      
-      return tournamentRef.update({
-        winner,
-        finished: true,
-        started: false,
-        updatedAt: new Date()
-      })
-    } else {
-      const nextRound = round + 1;
-      const final = finals[nextRound];
-      const seed = final.seeds.find( seed => seed.teams[0].id === id || seed.teams[1].id === id );
-      const seedIdx = final.seeds.indexOf(seed);
-      const team = final.seeds[seedIdx].teams.find( team => team.id === id);    
-      const teamIdx = final.seeds[seedIdx].teams.indexOf(team);    
-      final.seeds[seedIdx].teams[teamIdx] = winner;
-      const { id:docID, seeds } = final;    
+  const nextStep = (winner, round, id, type) => {
+    if(type === 'finals') {
       
-      return tournamentRef.collection('finals').doc(docID).update({
-        seeds
-      });
+      if(finals.length === round + 1) {      
+        return tournamentRef.update({
+          winner,
+          finished: true,
+          started: false,
+          updatedAt: new Date()
+        })
+      } else {
+        const nextRound = round + 1;
+        const final = finals[nextRound];
+        const seed = final.seeds.find( seed => seed.teams[0].id === id || seed.teams[1].id === id );
+        const seedIdx = final.seeds.indexOf(seed);
+        const team = final.seeds[seedIdx].teams.find( team => team.id === id);    
+        const teamIdx = final.seeds[seedIdx].teams.indexOf(team);    
+        final.seeds[seedIdx].teams[teamIdx] = winner;
+        const { id:docID, seeds } = final;    
+        
+        return tournamentRef.collection('finals').doc(docID).update({
+          seeds
+        });
+      }
+    } else {
+      if(games.length === round + 1) {      
+        return tournamentRef.update({
+          winner,
+          finished: true,
+          started: false,
+          updatedAt: new Date()
+        })
+      } else {
+        const nextRound = round + 1;
+        const game = games[nextRound];
+        const seed = game.seeds.find( seed => seed.teams[0].id === id || seed.teams[1].id === id );
+        const seedIdx = game.seeds.indexOf(seed);
+        const team = game.seeds[seedIdx].teams.find( team => team.id === id);    
+        const teamIdx = game.seeds[seedIdx].teams.indexOf(team);    
+        game.seeds[seedIdx].teams[teamIdx] = winner;
+        const { id:docID, seeds } = game;    
+        
+        return tournamentRef.collection('games').doc(docID).update({
+          seeds
+        });
+      }
     }
   }
   

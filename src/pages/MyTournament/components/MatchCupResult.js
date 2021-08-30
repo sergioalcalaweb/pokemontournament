@@ -33,6 +33,7 @@ const MatchCupResult = ({open, match, onClose, onSave }) => {
             defaultValue={0}
             variant='outlined'
             type='number'
+            inputProps={{ 'pattern': '[0-9]*' }}
             fullWidth
             inputRef={ register({
               required:'El campo es obligatorio',
@@ -56,6 +57,7 @@ const MatchCupResult = ({open, match, onClose, onSave }) => {
             defaultValue={0}
             variant='outlined'
             type='number'
+            inputProps={{ 'pattern': '[0-9]*' }}
             fullWidth 
             inputRef={ register({
               required:'El campo es obligatorio',

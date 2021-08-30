@@ -8,11 +8,18 @@ const useStyles = makeStyles( (theme) => ({
   form: {
     marginTop: theme.spacing(1),
     display:'flex',
-    flexDirection: 'row',
-    justifyContent:'space-between'
+    flexDirection: 'column',
+    justifyContent:'space-between',
+    [theme.breakpoints.up('sm')]: {
+      flexDirection:'row',
+    }
   },
   input: {
-    width:'49%',    
+    width:'100%',    
+    marginTop:15,
+    [theme.breakpoints.up('sm')]: {
+      width:'49%',    
+    }
   },
   actions: {
     justifyContent: 'flex-end'

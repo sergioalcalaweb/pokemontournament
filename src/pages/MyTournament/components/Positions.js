@@ -30,16 +30,6 @@ const Positions = ({showNotification, participants, detail, matchs, createFinals
 
   const userInfo = (pokemonNick) => participants.find( p => p.pokemonNick === pokemonNick );
 
-  const getDiff = (participant) => {
-    const lose = getLose(participant);
-    return participant.win - lose;
-  }
-
-  const getLose = (participant) => {
-    const totalWin = (detail.participantsCount - 1) * 4;    
-    return totalWin - participant.win;
-  }
-
   const handleTraineeClick = (trainee) => {
     setOpen(true);
     setTrainee(trainee);
@@ -156,8 +146,8 @@ const Positions = ({showNotification, participants, detail, matchs, createFinals
                         </TableCell>
                         <TableCell align='center'>{player.pct ? player.pct : 0}</TableCell>
                         <TableCell align='center'>{player.win}</TableCell>
-                        <TableCell align='center'>{getLose(player)}</TableCell>
-                        <TableCell align='center'>{getDiff(player)}</TableCell>
+                        <TableCell align='center'>{player.lose}</TableCell>
+                        <TableCell align='center'>{player.win - player.lose}</TableCell>
                         <TableCell align='center'>{player.points}</TableCell>
                       </TableRow>
                     )

@@ -97,10 +97,8 @@ const useTournaments = () => {
         )
       } else {
         const players = querySnapshot.docs.map( doc => doc.data() );
-        console.log(players);
         const {data: matchs } = generator(players, { type: 'simple-cup', toBeDefinedValue:'En espera' });
         const games = generateTournament(matchs);
-        
         await Promise.all(
           games.map( async (game) => {
           
@@ -131,7 +129,10 @@ const useTournaments = () => {
         points:0,
         win:0,
         pct:0,
-        loose:0
+        lose:0,
+        setWin:0,
+        setTie:0,
+        setLose:0
       }
       :
       {
@@ -159,7 +160,10 @@ const useTournaments = () => {
           points:0,
           win:0,
           pct:0,
-          loose:0
+          lose:0,
+          setWin:0,
+          setTie:0,
+          setLose:0
         }
         :
         {

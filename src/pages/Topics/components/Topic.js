@@ -229,7 +229,7 @@ function Topic({open, onClose, onSave, topicValue}) {
               variant='outlined'
               fullWidth           
               value={topic.name}
-              onChange={ (e) => setTopic({...topic, [e.target.name]:e.target.value}) }   
+              onChange={ (e) => setTopic({...topic, [e.target.name]:e.target.value.toUpperCase()}) }   
             />
             <Autocomplete
               multiple

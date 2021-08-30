@@ -1,9 +1,10 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, makeStyles, Slide, Typography } from '@material-ui/core'
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef, useContext, useState } from 'react'
 import Logo from "../../../assets/logo.png";
 import useTrainee from '../../../hooks/useTrainee';
 import Image from '../../../components/Image';
 import UserProfile from '../../../shared/UserProfile';
+import { AppContext } from '../../../context/AppContext';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -18,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Welcome = () => {
   const classes = useStyles();
+  const { toggleWelcome } =  useContext(AppContext);
   const [open , setOpen] = useState(true);
   const {info:{pokemonID}} = useTrainee();
 
@@ -32,7 +34,10 @@ const Welcome = () => {
         <UserProfile onSave={ () => setOpen(false)} />
       </DialogContent>
       <DialogActions>        
-        <Button onClick={ () => setOpen(false)}>
+        <Button onClick={ () => {
+          setOpen(false); 
+          toggleWelcome();
+          }}>
           {pokemonID ? 'Cerrar':'Omitir'}
         </Button>
       </DialogActions>

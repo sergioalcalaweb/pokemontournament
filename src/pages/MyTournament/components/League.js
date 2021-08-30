@@ -9,6 +9,7 @@ import useTournament from '../../../hooks/useTournament'
 const useStyles = makeStyles((theme) => ({
   appBar: {
     background:'linear-gradient(90deg, rgba(48,158,185,1) 0%, rgba(48,102,152,1) 100%)',
+    top:'calc( 64px + env(safe-area-inset-top) )'
   }
 }));
 
@@ -24,7 +25,7 @@ const League = ({id}) => {
 
   return (
     <React.Fragment>
-      <AppBar elevation={0} className={classes.appBar} position="static">
+      <AppBar elevation={0} className={classes.appBar} position='sticky'>
         <Tabs value={value} variant='fullWidth' onChange={handleChange} aria-label="Detalle del torneo">
           { tournament.detail.finals &&  <Tab value='finals' label="Liguilla"/>}
           <Tab value='positions' label="Tabla" />

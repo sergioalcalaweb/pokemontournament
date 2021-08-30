@@ -120,7 +120,7 @@ const Finals = ({detail, repechages, finals, updateFinalMatch, admin, topic, add
                 rounds={finals} 
                 mobileBreakpoint={0}
                 renderSeedComponent={(props) => {
-                  return <CustomSeed {...props} type='finals' onSelect={setresult} />
+                  return <CustomSeed {...props} type='games' onSelect={setresult} />
                 }} 
                 roundTitleComponent={CustomTitle} /> 
               

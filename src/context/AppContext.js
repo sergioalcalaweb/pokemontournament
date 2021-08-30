@@ -9,6 +9,7 @@ const AppProvider = ({children}) => {
 
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [dark, setDark] = useState(false);
+  const [welcome, setWelcome] = useState(true);
 
   useEffect(() => {
     if(prefersDarkMode) {
@@ -54,8 +55,12 @@ const AppProvider = ({children}) => {
     setDark(!dark);
   }
 
+  const toggleWelcome = () => {
+    setWelcome(!welcome);
+  }
+
   return (
-    <AppContext.Provider value={{ toggle, dark }}>
+    <AppContext.Provider value={{ toggle, dark, toggleWelcome, welcome }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {children}

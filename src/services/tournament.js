@@ -12,35 +12,46 @@ const checkValues = (number) => {
 const generateTournament = (games) => {
   const tournamentGames = _.groupBy(games, "round");
 
-  const days = Object.keys(tournamentGames).map((day) => {
+  const days = Object.keys(tournamentGames).map((day, indexDay) => {
     const dayMatchs = tournamentGames[day];
     return {
       title: `Dia ${day}`,
-      seeds: dayMatchs.map((match) => {
+      order: Number(day),
+      seeds: dayMatchs.map((match, index) => {  
+        const home = 
+          match.homeTeam === 'En espera' 
+          ?  {name:match.homeTeam} 
+          : match.homeTeam;
+        const away =  
+          match.awayTeam === 'En espera' 
+          ?  {name:match.awayTeam} 
+          : match.awayTeam;
+
         const teams = [
           {
-            ...match.homeTeam,
-            id: match.customData?.homeTeam ? match.customData.homeTeam : ""
+            ...home,
+            id: indexDay === 0 ? '' : `MS${day-1}${index * 2}`
           },
           {
-            ...match.awayTeam,
-            id: match.customData?.awayTeam ? match.customData.awayTeam : ""
+            ...away,
+            id: indexDay === 0 ? '' : `MS${day-1}${index * 2 + 1}`
           }
         ];
         return {
-          id: match.id,
+          id: `MS${day}${index}`,
           teams
         };
       })
     };
   });
   
-  if (days[0].seeds.length < (days[1].seeds.length * 2) ) {
+  if (days.length > 1 && days[0].seeds.length < (days[1].seeds.length * 2) ) {
     const emptyMatches = (days[1].seeds.length * 2) - days[0].seeds.length;
     for (let i = 0; i < emptyMatches; i++) {
       days[0].seeds.push({});
     }
   }
+
   const missings = checkValues(days[days.length - 1].seeds.length);
   const finals = Array
     .from( {length: missings}, (x,i) =>  Math.pow(2, i) )
@@ -49,19 +60,18 @@ const generateTournament = (games) => {
       const lastDay = days.length + index;
       return {
         title: `Dia ${lastDay + 1}`,
-        seeds: Array.from({length:seeds}).map((m, idx) => {
-          const prevMatch = lastDay > days.length ? false: days[lastDay - 1];
-          console.log(prevMatch);
+        order: Number(lastDay + 1),
+        seeds: Array.from({length:seeds}).map((m, idx) => {                   
           return {
-            id: `MS${index}${idx}`,
+            id: `MS${lastDay + 1}${idx}`,
             teams: [
               {
                 name: "En espera",
-                id: prevMatch.seeds ? prevMatch.seeds[2 * index].id : `MS${index - 1}${ 2 * idx}`
+                id: `MS${lastDay}${2 * idx}`
               },
               {
                 name: "En espera",
-                id: prevMatch.seeds ? prevMatch.seeds[2 * index + 1].id : `MS${index - 1}${ 2 * idx + 1}`
+                id: `MS${lastDay}${2 * idx + 1}`
               }
             ]
           };

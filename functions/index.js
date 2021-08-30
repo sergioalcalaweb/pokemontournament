@@ -13,7 +13,7 @@ const sendNotifications = (title, body, link, topic) => {
       image: IMAGE,
     },
     android:{
-      priority:"normal",
+      priority:"HIGH",
       data:{
         open_url:link
       },
@@ -118,6 +118,7 @@ exports.tournamentOpen = functions.firestore
         db.collection("notifications").add(notification);
         sendNotifications(title, body, link, "all");
       } else if (infoAfter.day > infoBefore.day) {
+        await deleteNotification(infoAfter.topic); 
         const title = `Jornada ${infoAfter.day} lista para jugar`;
         const body = `${infoAfter.title}`;
         const link = `/mistorneos/${id}`;
@@ -173,7 +174,23 @@ exports.tournamentOpen = functions.firestore
       }else if ( !infoBefore.finished && infoAfter.finished) {
         await deleteNotification(infoAfter.topic);        
       } else if (infoAfter.started && !infoBefore.started) {
-        await deleteNotification("all");   
+        await deleteNotification("all");  
+        if(infoBefore.kind === "copa") {
+          const title = `${info.title}`;
+          const body = "Los enfrentamientos de la copa están disponibles !PREPARATE!";
+          const link = `/mistorneos/${id}`;
+          const topic = infoBefore.topic;
+          const notification = {
+            title,
+            body,
+            url: link,
+            tournament: id,
+            timestamp: new Date(),
+            topic
+          };        
+          db.collection("notifications").add(notification);
+          sendNotifications(title, body, link, topic);
+        } 
       }
     });
 

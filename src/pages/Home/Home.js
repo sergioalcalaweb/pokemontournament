@@ -1,5 +1,5 @@
 import { Box, ButtonBase, Container, Fade, Grow, makeStyles, Typography } from '@material-ui/core'
-import React from 'react'
+import React, { useContext } from 'react'
 import Image from '../../components/Image'
 import { useHistory } from "react-router-dom";
 
@@ -14,6 +14,7 @@ import {colors} from "../../services/colors";
 import Partner from "../../assets/partner.png";
 import useTrainee from '../../hooks/useTrainee';
 import Welcome from './components/Welcome';
+import { AppContext } from '../../context/AppContext';
 
 const sections = [
   {
@@ -102,19 +103,20 @@ const useStyles = makeStyles( (theme) => ({
 
 const Home = () => {
   const classes = useStyles();
+  const { welcome } = useContext(AppContext);
   let history = useHistory();
   const { info : { admin, pokemonID }} = useTrainee();
   let filteredSections;
 
   if( !admin  ) {
-    filteredSections = sections.filter( section => !section.admin )
+    filteredSections = sections.filter( section => !section.admin );
   } else {
     filteredSections = sections;
   }
   
   return (
     <Container>
-      {!pokemonID && <Welcome />}
+      { welcome && !pokemonID && <Welcome />}
       <Box textAlign="center" paddingTop={5}>
         <Fade in timeout={500}>
           <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="flex-start">         
