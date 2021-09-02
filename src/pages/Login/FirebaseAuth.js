@@ -12,7 +12,7 @@ const FirebaseAuth = () => {
       auth.FacebookAuthProvider.PROVIDER_ID,
       auth.TwitterAuthProvider.PROVIDER_ID,
     ],
-    signInSuccessUrl: '/',
+    signInSuccessUrl: '/home',
     credentialHelper: 'none',
   }
   return (

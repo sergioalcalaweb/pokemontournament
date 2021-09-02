@@ -42,9 +42,10 @@ const useTrainee = () => {
     const userFB = {
       ...info,
       ...newInfo      
-    }
-    if(userAuth.pokemonID) {
-      await userDetailsRef.update(userFB);
+    };
+
+    if(userFirebase.pokemonID) {
+      await userDetailsRef.update(userFB);      
     } else {      
       userFB.admin = false;
       await usersDetailsRef.doc(userAuth.uid).set(userFB);
