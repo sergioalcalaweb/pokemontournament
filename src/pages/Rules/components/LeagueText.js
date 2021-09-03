@@ -72,10 +72,10 @@ const LeagueText = () => {
       <Typography variant='subtitle2'>Reglas especiales</Typography>
       <br></br>
       <Typography component='p' variant='body1'>
-        Las reglas especiales son jornadas donde se podrá utilizar exclusivamente ciertos tipos de pokémon. En la fase regular del torneo, el jugador podrá elegir su equipo libremente, siempre y cuando cumpla con la regla especial establecida y sea menor a 1500 PC. En los playoffs, se establecerá un plazo de tiempo en donde los competidores tendrán que seleccionar y enviar al jefe de torneo su equipo con 6 pokémon que cumplan con esta regla y sean menores de 1500PC. 
+        Las reglas especiales son jornadas donde se podrá utilizar exclusivamente ciertos tipos de pokémon. En la fase regular del torneo, el jugador podrá elegir su equipo libremente, siempre y cuando cumpla con la regla especial establecida y sea menor a 1500 PC. En los liguilla, se establecerá un plazo de tiempo en donde los competidores tendrán que seleccionar y enviar al jefe de torneo su equipo con 6 pokémon que cumplan con esta regla y sean menores de 1500PC. 
       </Typography>
       <br></br>
-      <Typography variant='subtitle2'>Playoffs</Typography>
+      <Typography variant='subtitle2'>Liguilla</Typography>
       <br></br>
       <Typography component='p' variant='body1'>
         Para definir al campeón de cada división, con base a los criterios de desempate, se ordenarán a los jugadores de la siguiente forma:
@@ -83,10 +83,10 @@ const LeagueText = () => {
       <br></br>
       <ul>
         <Typography component='li'>
-          los jugadores del lugar 1 al lugar 6 obtendrán su pase a los playoffs de forma directa.
+          los jugadores del lugar 1 al lugar 6 obtendrán su pase a los liguilla de forma directa.
         </Typography>
         <Typography component='li'>
-          los jugadores del lugar 7 al lugar 10 jugarán un repechaje de un set de 5 combates para obtener uno de los dos boletos a los playoffs. Se enfrentarán de la siguiente forma:
+          los jugadores del lugar 7 al lugar 10 jugarán un repechaje de un set de 5 combates para obtener uno de los dos boletos a los liguilla. Se enfrentarán de la siguiente forma:
         </Typography>
         <Typography align='center'>
           7mo. lugar vs. 10mo. lugar.          
@@ -95,7 +95,7 @@ const LeagueText = () => {
           8vo. lugar vs. 9no. lugar.
         </Typography>
         <Typography component='li'>
-          Se jugarán tres fases de playoffs: cuartos de final, semifinal y final.
+          Se jugarán tres fases de liguilla: cuartos de final, semifinal y final.
         </Typography>        
         <Typography component='li'>
           Los combates de la fase de <strong>cuartos de final</strong> y <strong>semifinal</strong> serán a un set de 3 combates, mientras que <strong>el juego por el tercer lugar y la final</strong> será a un set de 5 combates. Este formato es aplicable para ambas divisiones.
