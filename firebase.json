@@ -9,7 +9,7 @@
     ],
     "predeploy": [
       "yarn install",
-      "yarn deploy-git"
+      "yarn host"
     ],
     "rewrites": [
       {
