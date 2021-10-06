@@ -1,5 +1,6 @@
-import { Divider, makeStyles, Typography } from '@material-ui/core'
+import { Divider, Typography } from '@mui/material'
 import React, { Fragment } from 'react'
+import { makeStyles } from '@mui/styles';
 
 const useStyle = makeStyles( theme => ({
   list: {

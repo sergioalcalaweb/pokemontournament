@@ -1,7 +1,8 @@
-import { Box, ButtonBase, Container, Fade, Grow, makeStyles, Typography } from '@material-ui/core'
+import { Box, ButtonBase, Container, Fade, Grow, Typography } from '@mui/material'
 import React, { useContext } from 'react'
 import Image from '../../components/Image'
 import { useHistory } from "react-router-dom";
+import { makeStyles } from '@mui/styles';
 
 
 import first from '../../assets/1.png'

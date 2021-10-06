@@ -1,11 +1,11 @@
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, ButtonBase, Container, Fade, makeStyles, Typography } from '@material-ui/core'
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, ButtonBase, Container, Fade, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import useTournament from '../../../hooks/useTournament';
 import Trofeo from "../../../assets/tournaments/Ticketed_Research_medal.png";
 import winner from "../../../assets/winner.jpg";
 import Image from '../../../components/Image';
 import { withNotification } from '../../../HOC/Notification';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import useTrainee from '../../../hooks/useTrainee';
 import DetailTopic from '../../../shared/DetailTopic';
 import ShowTopic from './ShowTopic';
@@ -14,6 +14,7 @@ import MatchCupResult from './MatchCupResult';
 import { Bracket } from 'react-brackets';
 import CustomSeed from './CustomSeed';
 import Winner from '../../../components/Winner';
+import { makeStyles } from '@mui/styles';
 
 
 const useStyle = makeStyles( theme => ({

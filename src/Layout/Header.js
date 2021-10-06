@@ -1,16 +1,17 @@
-import { AppBar, Avatar,  ButtonBase, IconButton, makeStyles, Menu, MenuItem, Toolbar } from '@material-ui/core'
+import { AppBar, Avatar,  ButtonBase, IconButton, Menu, MenuItem, Toolbar } from '@mui/material'
 import React, { useContext, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
 import { useAuth } from 'reactfire';
 import Image from '../components/Image'
 import Logo from "../assets/logo.png";
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import Brightness4Icon from '@material-ui/icons/Brightness4';
-import Brightness7Icon from '@material-ui/icons/Brightness7';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import Install from './Install';
 import { AppContext } from '../context/AppContext';
 import Notifications from './Notifications';
 import useTrainee from '../hooks/useTrainee';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -92,8 +93,7 @@ const Header = () => {
           id="simple-menu"
           anchorEl={anchorEl}
           keepMounted
-          open={Boolean(anchorEl)}
-          getContentAnchorEl={null}
+          open={Boolean(anchorEl)}          
           anchorOrigin={{
             vertical: 'center',
             horizontal: 'center',

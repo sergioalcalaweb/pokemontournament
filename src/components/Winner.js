@@ -1,8 +1,9 @@
-import { Box, makeStyles, Paper, Typography } from '@material-ui/core'
+import { Box, Paper, Typography } from '@mui/material'
 import React from 'react'
 import Image from './Image'
 import Trofeo from "../assets/tournaments/Ticketed_Research_medal.png";
 import winner from "../assets/winner.jpg";
+import { makeStyles } from '@mui/styles';
 
 const useStyle = makeStyles( theme => ({
    

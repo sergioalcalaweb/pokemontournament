@@ -1,10 +1,11 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, makeStyles, Slide, Typography } from '@material-ui/core'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography } from '@mui/material'
 import React, { forwardRef, useContext, useState } from 'react'
 import Logo from "../../../assets/logo.png";
 import useTrainee from '../../../hooks/useTrainee';
 import Image from '../../../components/Image';
 import UserProfile from '../../../shared/UserProfile';
 import { AppContext } from '../../../context/AppContext';
+import { makeStyles } from '@mui/styles';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

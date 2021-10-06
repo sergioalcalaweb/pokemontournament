@@ -1,7 +1,8 @@
-import { AppBar, Box, ButtonBase, makeStyles, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Box, ButtonBase, Toolbar, Typography } from '@mui/material';
 import React from 'react';
 import Image from './Image';
 import Logo from "../assets/logo.png";
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme) => ({
   root: {

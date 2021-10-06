@@ -1,7 +1,7 @@
-import { Box, Button, Container, Fade, List, ListItem, ListItemAvatar, ListItemText, Paper,  Slide,  Typography } from '@material-ui/core'
+import { Box, Button, Container, Fade, List, ListItem, ListItemAvatar, ListItemText, Paper,  Slide,  Typography } from '@mui/material'
 import React from 'react'
 import { useHistory } from "react-router-dom";
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Battle from '../../assets/tournaments/Battle_League_Great.png'
 import Cup from '../../assets/tournaments/GO_Battle_League.png'
 import Image from '../../components/Image'

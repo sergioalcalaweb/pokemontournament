@@ -1,6 +1,6 @@
-import { IconButton, Menu, MenuItem } from '@material-ui/core';
+import { IconButton, Menu, MenuItem } from '@mui/material';
 import React from 'react';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const Options = props => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -20,8 +20,7 @@ const Options = props => {
         id="long-menu"
         anchorEl={anchorEl}
         keepMounted
-        open={open}
-        getContentAnchorEl={null}
+        open={open}        
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',

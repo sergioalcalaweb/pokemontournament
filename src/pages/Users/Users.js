@@ -1,4 +1,4 @@
-import { Box, Container, Fade, FormControlLabel, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Paper,  Switch,  Typography } from '@material-ui/core'
+import { Box, Container, Fade, FormControlLabel, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Paper,  Switch,  Typography } from '@mui/material'
 import React from 'react'
 import Image from '../../components/Image'
 import useTrainee from '../../hooks/useTrainee';

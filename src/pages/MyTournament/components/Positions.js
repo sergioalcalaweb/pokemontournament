@@ -1,8 +1,9 @@
-import { Avatar, Box, Checkbox, Container, Fab, Fade, FormControlLabel, makeStyles, Paper, Slide, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
+import { Avatar, Box, Checkbox, Container, Fab, Fade, FormControlLabel, Paper, Slide, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import React, { useState } from 'react'
 import { withNotification } from '../../../HOC/Notification';
 import Trainee from './Trainee';
+import { makeStyles } from '@mui/styles';
 
 const useStyle = makeStyles( theme => ({
   fab: {

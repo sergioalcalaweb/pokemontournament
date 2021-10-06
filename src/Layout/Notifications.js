@@ -1,5 +1,5 @@
-import { Badge, IconButton, Menu, MenuItem, Typography } from '@material-ui/core'
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import { Badge, IconButton, Menu, MenuItem, Typography } from '@mui/material'
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import React, { Fragment, useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import useNotifications from '../hooks/useNotifications';
@@ -39,8 +39,7 @@ const Notifications = ({tournaments}) => {
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
-        onClose={handleClose}
-        getContentAnchorEl={null}
+        onClose={handleClose}        
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',

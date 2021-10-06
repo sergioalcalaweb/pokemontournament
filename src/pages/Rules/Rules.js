@@ -1,11 +1,13 @@
-import { Box, Container, Fade, Paper, Tab, Tabs, Typography, withWidth } from '@material-ui/core'
+import { Box, Container, Fade, Paper, Tab, Tabs, Typography } from '@mui/material'
 import React, { useState } from 'react'
+import useWidth from '../../hooks/useWidth';
 import ChampionsText from './components/ChampionsText';
 import CupText from './components/CupText';
 import LeagueText from './components/LeagueText';
 import ObligationsText from './components/ObligationsText';
 import SanctionsText from './components/SanctionsText';
 import SuscriptionText from './components/SuscriptionText';
+
 
 
 const TabPanel = (props) => {
@@ -28,8 +30,9 @@ const TabPanel = (props) => {
   );
 }
 
-const Rules = ({width}) => {
+const Rules = () => {
 
+  const width = useWidth();
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -83,4 +86,4 @@ const Rules = ({width}) => {
   )
 }
 
-export default  withWidth()(Rules)
+export default Rules

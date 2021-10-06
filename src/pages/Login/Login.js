@@ -1,9 +1,10 @@
 import React from 'react'
-import Container from '@material-ui/core/Container';
-import { Box, makeStyles, Paper } from '@material-ui/core';
+import Container from '@mui/material/Container';
+import { Box, Paper } from '@mui/material';
 import Image from '../../components/Image';
-import Logo from '../../assets/logo.png'
-import FirebaseAuth from './FirebaseAuth'
+import Logo from '../../assets/logo.png';
+import FirebaseAuth from './FirebaseAuth';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles( theme => ({
   root: {    

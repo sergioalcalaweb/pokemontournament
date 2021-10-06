@@ -1,6 +1,6 @@
-import { createMuiTheme, CssBaseline, useMediaQuery } from '@material-ui/core';
-import { ThemeProvider } from '@material-ui/styles';
-import { red } from '@material-ui/core/colors';
+import { CssBaseline, useMediaQuery } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { red } from '@mui/material/colors';
 import React, { createContext, useEffect, useMemo, useState } from 'react'
 import ReactGA from 'react-ga4';
 
@@ -17,8 +17,6 @@ const AppProvider = ({children}) => {
   }, [])
 
   useEffect(() => {
-
-
     if(prefersDarkMode) {
       setDark(prefersDarkMode);
     }
@@ -26,9 +24,9 @@ const AppProvider = ({children}) => {
 
   const theme = useMemo(
     () =>      
-    createMuiTheme({      
+    createTheme({      
       palette: {
-        type: dark ? 'dark' : 'light',
+        mode: dark ? 'dark' : 'light',
         primary: {
           main: '#309eb9',      
         },

@@ -1,5 +1,5 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core'
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material'
+import Autocomplete from '@mui/lab/Autocomplete';
 import React, { useEffect, useState } from 'react'
 import useTopics from '../../../hooks/useTopics';
 import DetailTopic from '../../../shared/DetailTopic';

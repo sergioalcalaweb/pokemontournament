@@ -1,6 +1,7 @@
-import { Avatar, Box, makeStyles, Typography } from '@material-ui/core';
+import { Avatar, Box, Typography } from '@mui/material';
 import React from 'react'
 import { Seed, SeedItem, SeedTeam } from 'react-brackets';
+import { makeStyles } from '@mui/styles';
 
 const useStyle = makeStyles( theme => ({ 
   root:{    

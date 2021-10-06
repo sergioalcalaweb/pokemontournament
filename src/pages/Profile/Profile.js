@@ -1,4 +1,4 @@
-import { Box, Container, Fade, List, Paper, Typography } from '@material-ui/core'
+import { Box, Container, Fade, List, Paper, Typography } from '@mui/material'
 import React from 'react'
 import { messaging } from 'reactfire';
 import Push from './components/Push';

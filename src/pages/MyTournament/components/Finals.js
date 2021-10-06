@@ -1,11 +1,11 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, Fade, Typography } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, Fade, Typography } from '@mui/material';
 import React, { useState } from 'react'
 import { Bracket } from 'react-brackets';
 import Winner from '../../../components/Winner';
 import MatchCupResult from './MatchCupResult';
 import Trofeo from "../../../assets/tournaments/Ticketed_Research_medal.png";
 import Image from '../../../components/Image';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DetailTopic from '../../../shared/DetailTopic';
 import ShowTopic from './ShowTopic';
 import { withNotification } from '../../../HOC/Notification';

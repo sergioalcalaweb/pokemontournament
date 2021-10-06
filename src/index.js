@@ -4,7 +4,7 @@ import './styles/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorkerRegistration';
-import { Button, Snackbar } from '@material-ui/core';
+import { Button, Snackbar } from '@mui/material';
 
 const AppRender =  () => {
 

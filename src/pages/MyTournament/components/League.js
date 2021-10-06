@@ -1,10 +1,11 @@
-import { AppBar, makeStyles, Tab, Tabs } from '@material-ui/core'
+import { AppBar, Tab, Tabs } from '@mui/material'
 import React, { useState } from 'react'
 import Finals from './Finals';
 import Positions from './Positions'
 import Schedules from './Schedules'
 import useTrainee from '../../../hooks/useTrainee'
-import useTournament from '../../../hooks/useTournament'
+import useTournament from '../../../hooks/useTournament';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {

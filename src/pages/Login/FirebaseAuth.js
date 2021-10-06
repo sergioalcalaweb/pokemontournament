@@ -1,6 +1,6 @@
 import React from 'react'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 import { useAuth } from 'reactfire'
 
 const FirebaseAuth = () => {

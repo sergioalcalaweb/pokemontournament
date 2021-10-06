@@ -1,8 +1,8 @@
-import { ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText, Switch } from '@material-ui/core'
+import { ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText, Switch } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useMessaging } from 'reactfire';
 import useTrainee from '../../../hooks/useTrainee';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 
 const Push = () => {

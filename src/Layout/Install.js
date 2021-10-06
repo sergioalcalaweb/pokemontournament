@@ -1,6 +1,6 @@
-import { IconButton, Tooltip } from '@material-ui/core';
+import { IconButton, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react'
-import GetAppIcon from '@material-ui/icons/GetApp';
+import GetAppIcon from '@mui/icons-material/GetApp';
 
 const Install = () => {
   const [visible, setVisible] = useState(false);
