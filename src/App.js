@@ -7,6 +7,7 @@ import {
 import Loading from "./components/Loading";
 import FirebaseProvider from "./context/Firebase";
 import { AppProvider } from "./context/AppContext";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const Index = lazy( () => import('./pages') );
 const Login = lazy( () => import('./pages/Login') );
@@ -54,8 +55,10 @@ const AppContainer = () => {
     <Suspense fallback={<Loading />}>
       <AuthCheck fallback={<Login />}>
         <PreloadApp>
-          <Router>          
-            <Index />
+          <Router>     
+            <ErrorBoundary>
+              <Index />
+            </ErrorBoundary>     
           </Router>          
         </PreloadApp>
       </AuthCheck>

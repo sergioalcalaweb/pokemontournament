@@ -31,8 +31,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "deploy": "react-scripts build && node sw-generator.js && node -e \"console.log('sw done')\" && firebase deploy --only hosting",
-    "host": "react-scripts build && node sw-generator.js && node -e \"console.log('sw done')\"",
+    "deploy:staging": "sh -ac '. .env.staging; react-scripts build' && node sw-generator.js && node -e \"console.log('sw done')\" && firebase deploy -P staging --only hosting",
+    "deploy:production": "sh -ac '. .env.production; react-scripts build' && node sw-generator.js && node -e \"console.log('sw done')\" && firebase deploy -P default --only hosting",
+    "deploy": "sh -ac '. .env.staging; react-scripts build' && node sw-generator.js && node -e \"console.log('sw done')\" && firebase deploy -P staging --only hosting",
+    "production": "react-scripts build && node sw-generator.js && node -e \"console.log('sw done')\" && firebase deploy -P staging --only hosting",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

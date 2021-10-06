@@ -18,6 +18,7 @@ const useTrainee = () => {
 
     
   const { data: userFirebase } = useFirestoreDocData(userDetailsRef);
+  
   const [info, setInfo] = useState({
     displayName: userAuth.displayName,
     photoURL: userAuth.photoURL,

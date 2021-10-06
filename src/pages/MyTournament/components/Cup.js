@@ -117,7 +117,7 @@ const useStyle = makeStyles( theme => ({
 const Cup = ({showNotification, id}) => {
   
   const {detail, games, updateCupMatch, participantsCup, topic, addTopic} = useTournament(id);
-  const { info: {admin} } = useTrainee();
+  const { info: {admin, pokemonNick} } = useTrainee();
   const [open, setOpen] = useState(false);
   const [openPlayer, setOpenPlayer] = useState(false);
   const [openTopic, setOpenTopic] = useState(false);
@@ -125,7 +125,6 @@ const Cup = ({showNotification, id}) => {
   const [trainee, setTrainee] = useState(null);
   const classes = useStyle();
 
-  console.log(games);
 
   const handleSave = async (match) => {
     setOpen(false);
@@ -134,9 +133,8 @@ const Cup = ({showNotification, id}) => {
   }
 
 
-  const handleClick = (seed, ridx, sidx, type) => { 
-
-    if( !admin && seed.teams[0].pokemonNick !== trainee && seed.teams[0].pokemonNick !== trainee){
+  const handleClick = (seed, ridx, sidx, type) => {     
+    if( !admin && seed.teams[0].pokemonNick !== pokemonNick && seed.teams[1].pokemonNick !== pokemonNick){
       return;
     }
 

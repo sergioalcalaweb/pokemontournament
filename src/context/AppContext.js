@@ -13,9 +13,7 @@ const AppProvider = ({children}) => {
   const [welcome, setWelcome] = useState(true);
 
   useEffect(() => {
-    ReactGA.initialize(process.env.REACT_APP_GA);
-    // ReactGA.send("pageview"); 
-    console.log(ReactGA.isInitialized);        
+    ReactGA.initialize(process.env.REACT_APP_GA);       
   }, [])
 
   useEffect(() => {
@@ -62,7 +60,6 @@ const AppProvider = ({children}) => {
 
   const toggle = () => {
     setDark(!dark);
-    console.log(ReactGA._current_GA_MEASUREMENT_ID);
   }
 
   const toggleWelcome = () => {
