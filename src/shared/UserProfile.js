@@ -87,6 +87,29 @@ const UserProfile = ({ onSave = null}) => {
                 className={classes.input}
               />
             </div>
+            <TextField
+                error={!!errors.whatsapp}                 
+                label='Numero de whatsapp'
+                name='whatsapp'
+                defaultValue={user.whatsapp}
+                variant='outlined'
+                inputProps={{ 'pattern': '[0-9]*' }}
+                fullWidth  
+                inputRef={ register({
+                  required:'El campo es obligatorio',
+                  maxLength: {
+                    value: 10,
+                    message: 'El número debe ser de 10 digitos'
+                  },
+                  minLength: {
+                    value: 10,
+                    message: 'El número debe ser de 10 digitos'
+                  },
+                  valueAsNumber: true,
+                }) }  
+                className={classes.input}
+                helperText={errors.whatsapp?.message}           
+              />
         </CardContent>
         <CardActions className={classes.actions}>
           <Button 

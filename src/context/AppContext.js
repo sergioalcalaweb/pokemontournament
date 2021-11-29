@@ -2,7 +2,6 @@ import { createMuiTheme, CssBaseline, useMediaQuery } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { red } from '@material-ui/core/colors';
 import React, { createContext, useEffect, useMemo, useState } from 'react'
-import ReactGA from 'react-ga4';
 
 export const AppContext = createContext();
 
@@ -13,12 +12,6 @@ const AppProvider = ({children}) => {
   const [welcome, setWelcome] = useState(true);
 
   useEffect(() => {
-    ReactGA.initialize(process.env.REACT_APP_GA);       
-  }, [])
-
-  useEffect(() => {
-
-
     if(prefersDarkMode) {
       setDark(prefersDarkMode);
     }
@@ -66,12 +59,8 @@ const AppProvider = ({children}) => {
     setWelcome(!welcome);
   }
 
-  const setTrackEvent = () => {
-    console.log(ReactGA._current_GA_MEASUREMENT_ID);
-  }
-
   return (
-    <AppContext.Provider value={{ toggle, dark, toggleWelcome, welcome, setTrackEvent }}>
+    <AppContext.Provider value={{ toggle, dark, toggleWelcome, welcome }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {children}
