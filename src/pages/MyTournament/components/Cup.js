@@ -1,6 +1,5 @@
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, ButtonBase, Container, Fade, makeStyles, Typography } from '@material-ui/core'
 import React, { useState } from 'react'
-import useTournament from '../../../hooks/useTournament';
 import Trofeo from "../../../assets/tournaments/Ticketed_Research_medal.png";
 import winner from "../../../assets/winner.jpg";
 import Image from '../../../components/Image';
@@ -114,9 +113,9 @@ const useStyle = makeStyles( theme => ({
   },
 }))
 
-const Cup = ({showNotification, id}) => {
+const Cup = ({showNotification, tournament}) => {
   
-  const {detail, games, updateCupMatch, participantsCup, topic, addTopic} = useTournament(id);
+  const {detail, games, updateCupMatch, participantsCup, topic, addTopic} = tournament;
   const { info: {admin, pokemonNick} } = useTrainee();
   const [open, setOpen] = useState(false);
   const [openPlayer, setOpenPlayer] = useState(false);

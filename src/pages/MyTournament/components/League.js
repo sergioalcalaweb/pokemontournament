@@ -1,10 +1,10 @@
 import { AppBar, makeStyles, Tab, Tabs } from '@material-ui/core'
 import React, { useState } from 'react'
+import _ from 'lodash';
 import Finals from './Finals';
 import Positions from './Positions'
 import Schedules from './Schedules'
 import useTrainee from '../../../hooks/useTrainee'
-import useTournament from '../../../hooks/useTournament'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -13,11 +13,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const League = ({id}) => {
-  const classes = useStyles();
-  const tournament = useTournament(id);
+const League = ({ tournament }) => {
+  const classes = useStyles();  
   const { info: trainee } = useTrainee();
   const [value, setValue] = useState(tournament.detail.finals ? 'finals' :'positions');
+
+  const shedules = _.groupBy(tournament.matchs,'day');
+  const days = Object.keys(shedules);
 
   const handleChange = (event, newValue) => {  
     setValue(newValue);
@@ -34,7 +36,7 @@ const League = ({id}) => {
       </AppBar>
       { value === 'finals' && <Finals admin={trainee.admin} trainee={trainee.pokemonNick} {...tournament} />}
       { value === 'positions' && <Positions admin={trainee.admin} {...tournament} />}
-      { value === 'schedules' && <Schedules user={trainee} {...tournament} />}
+      { value === 'schedules' && <Schedules user={trainee} {...tournament} shedules={shedules} days={days} />}
     </React.Fragment>
   )
 }

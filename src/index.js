@@ -23,7 +23,6 @@ const AppRender =  () => {
   const updateServiceWorker = () => {
     const {waitingWorker} = apppUpdate;
     waitingWorker && waitingWorker.postMessage({ type: "SKIP_WAITING" });
-    window.location.reload();
   }
 
   useEffect(() => {

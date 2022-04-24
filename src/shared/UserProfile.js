@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import { useForm } from "react-hook-form";
 import MuiAlert from '@material-ui/lab/Alert';
 import useTrainee from '../hooks/useTrainee';
+import MuiPhoneNumber from 'mui-phone-input-ssr';
+
 
 const useStyles = makeStyles( (theme) => ({
   form: {
@@ -23,6 +25,9 @@ const useStyles = makeStyles( (theme) => ({
   },
   actions: {
     justifyContent: 'flex-end'
+  },
+  countryList: {
+    ...theme.typography.body1,
   }
 } ));
 
@@ -32,8 +37,11 @@ const UserProfile = ({ onSave = null}) => {
   const classes = useStyles();
   const [open, setOpen ] = useState(false);
   const { info: user, update } =  useTrainee();
+
+  console.log(user);
   
-  const onSubmit = async (formData) => {    
+  const onSubmit = async (formData) => {  
+    console.log(formData);  
     await update(formData);
     setOpen(true);
     if(onSave) {
@@ -87,7 +95,31 @@ const UserProfile = ({ onSave = null}) => {
                 className={classes.input}
               />
             </div>
-            <TextField
+            <MuiPhoneNumber 
+              defaultCountry={'mx'}
+              onlyCountries={['mx']}              
+              error={!!errors.whatsapp}                 
+              label='Numero de whatsapp'
+              name='whatsapp'
+              variant='outlined'
+              value={user.whatsapp}
+              inputProps={{ 'pattern': '[0-9]*' }}
+              fullWidth  
+              inputRef={ register({
+                required:'El campo es obligatorio',
+                maxLength: {
+                  value: 13,
+                  message: 'El número debe ser de 10 digitos'
+                },
+                minLength: {
+                  value: 13,
+                  message: 'El número debe ser de 10 digitos'
+                },                
+              }) }  
+              className={classes.input}
+              helperText={errors.whatsapp?.message} 
+            />
+            {/* <TextField
                 error={!!errors.whatsapp}                 
                 label='Numero de whatsapp'
                 name='whatsapp'
@@ -109,7 +141,7 @@ const UserProfile = ({ onSave = null}) => {
                 }) }  
                 className={classes.input}
                 helperText={errors.whatsapp?.message}           
-              />
+              /> */}
         </CardContent>
         <CardActions className={classes.actions}>
           <Button 

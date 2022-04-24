@@ -54,11 +54,13 @@ const Tournaments = ({showNotification}) => {
 
   const addDemoTournament = async (id, participants, kind) => {
     try {
+      console.log('error');
       setSubmitting(true);
       await addDemoParticipants(kind,id, participants);
       showNotification('Listo participantes agregados');
       setSubmitting(false);      
-    } catch (error) {
+    } catch (error) {      
+      console.log(error);
       setSubmitting(false);
     }
   }

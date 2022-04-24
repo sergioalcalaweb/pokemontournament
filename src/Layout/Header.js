@@ -7,6 +7,7 @@ import Logo from "../assets/logo.png";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
+
 import Install from './Install';
 import { AppContext } from '../context/AppContext';
 import Notifications from './Notifications';
@@ -77,6 +78,7 @@ const Header = () => {
         <IconButton onClick={toggle} aria-label="Mod oscuro" color="inherit">
           { dark ? <Brightness7Icon /> : <Brightness4Icon /> }
         </IconButton>
+
         <Notifications tournaments={tournaments} />
         <Install />
         <IconButton

@@ -8,12 +8,12 @@ import useTournament from '../../hooks/useTournament';
 const MyTournament = () => {
 
   const { id } = useParams();
-  const { detail } = useTournament(id);
+  const tournament = useTournament(id);
 
   return (
     <React.Fragment>      
-      { detail.kind === 'liga' && <League id={id} /> }
-      { detail.kind === 'copa' && <Cup id={id} /> }
+      { tournament.detail.kind === 'liga' && <League tournament={tournament} /> }
+      { tournament.detail.kind === 'copa' && <Cup tournament={tournament} /> }
     </React.Fragment>
     
   )

@@ -1,6 +1,5 @@
 import { Avatar, Box, Button, Container, Divider, Fade, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText, ListSubheader, makeStyles, Paper, Tooltip, Typography } from '@material-ui/core';
 import React, { useState } from 'react'
-import _ from 'lodash';
 import GavelIcon from '@material-ui/icons/Gavel';
 import AddIcon from '@material-ui/icons/Add';
 import { withNotification } from '../../../HOC/Notification';
@@ -84,7 +83,9 @@ const styles = makeStyles( (theme) => ({
 const Schedules = ({
     showNotification,
     user,
-    matchs, updateMatch, participants, rules, addRule, detail:{finished, day: gameDay}, updateDay, deleteMatch
+    shedules,
+    days,
+    updateMatch, participants, rules, addRule, detail:{finished, day: gameDay}, updateDay, deleteMatch
   }) => {
 
   const classes = styles();
@@ -96,10 +97,7 @@ const Schedules = ({
   const [match, setMatch] = useState(null);
   const [day, setDay] = useState(null);
   const [topic, setTopic] = useState(null);
-  
-
-  const shedules = _.groupBy(matchs,'day');
-  const days = Object.keys(shedules);  
+    
   const userInfo = (pokemonNick) => participants.find( p => p.pokemonNick === pokemonNick );
   const getRule = (day) => rules.find( r => r.day === day );
 
@@ -163,10 +161,8 @@ const Schedules = ({
         <Box py={5}>
           {
             days.map( (day, index) => {
-
               const matchs = shedules[`${day}`];
               const available = day <= gameDay;
-        
               return (
                 <List component={Paper} square key={index}>
                   <ListSubheader className={classes.subHeader} color='primary'>
@@ -212,7 +208,7 @@ const Schedules = ({
                   </ListSubheader>
                   { !available && !user.admin && (
                     <ListItem>
-                        <ListItemText primary="No disponible" />
+                      <ListItemText primary="No disponible" />
                     </ListItem>
                   ) }
                   { (available  || (!available && user.admin)) &&                  
@@ -263,7 +259,7 @@ const Schedules = ({
                   }
                 </List>
               )
-             } )
+            })
           }
         </Box>
         <ShowTopic topicDetail={topic} open={openRule} onClose={handleClose} onSelect={addRuleDay}/>

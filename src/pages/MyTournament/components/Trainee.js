@@ -1,10 +1,11 @@
 import { Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from '@material-ui/core'
 import React, { useState } from 'react'
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 
 const Trainee = ({open, onClose, trainee}) => {
 
-  const {pokemonNick, pokemonID, photoURL } = trainee;
+  const {pokemonNick, pokemonID, photoURL, whatsapp } = trainee;
   const [copied, setCopied] = useState(false);
 
   const copy = (text) => {
@@ -12,6 +13,13 @@ const Trainee = ({open, onClose, trainee}) => {
     setCopied(true);
     setTimeout( () => setCopied(false), 2000 );
   }
+
+  const goWhatsapp = (number) => {
+    const onlyNumber = Number(number);
+    const text = 'Nos toca jugar pokemon GO';    
+    window.open(`https://wa.me/${onlyNumber}?text=${text}`);
+  }
+  
   return (
     <Dialog open={open}  onClose={onClose}>
       <DialogTitle>
@@ -31,6 +39,11 @@ const Trainee = ({open, onClose, trainee}) => {
               <FileCopyIcon />
             </IconButton>
           </Box>
+          { whatsapp && 
+            <IconButton onClick={ () => goWhatsapp(whatsapp) }> 
+              <WhatsAppIcon />
+            </IconButton>
+          }
           { copied && <Typography align='center' color='primary'>Copiado !!</Typography> }
         </Box>
       </DialogContent>

@@ -1,36 +1,37 @@
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
 
 const useTopics = (id = null) => {
-
   const firestore = useFirestore();
-  const topicRef = firestore.collection('topics');
-  const { data: topics } = useFirestoreCollectionData(topicRef.orderBy('timestamp', 'desc'), { idField: "id" });  
+  const topicRef = firestore.collection("topics");
+  const { data: topics } = useFirestoreCollectionData(
+    topicRef.orderBy("timestamp", "desc"),
+    { idField: "id" }
+  );
 
   const addTopic = (info) => {
     return topicRef.add({
       ...info,
       timestamp: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     });
-  }
+  };
 
   const updateTopic = (info) => {
     const { id, ...updateInfo } = info;
     return topicRef.doc(id).update({
       ...updateInfo,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     });
-  }
+  };
 
   const deleteTopic = (id) => {
     return topicRef.doc(id).delete();
-  }
+  };
 
   const getDetail = async (id) => {
-    const info = await topicRef.doc(id).get(); 
+    const info = await topicRef.doc(id).get();
     return info.data();
-  }
-
+  };
 
   return {
     topics,
@@ -38,10 +39,7 @@ const useTopics = (id = null) => {
     updateTopic,
     deleteTopic,
     getDetail,
-  }
-  
-}
-
-
+  };
+};
 
 export default useTopics;

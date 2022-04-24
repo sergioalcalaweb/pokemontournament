@@ -4,16 +4,9 @@ import { useForm } from "react-hook-form";
 
 const MatchResult = ({open, match, onClose, onSave }) => {
 
-  const { register, handleSubmit, errors, setError } = useForm();
+  const { register, handleSubmit, errors } = useForm();
 
   const saveMatch = (resultData) => {   
-    if(resultData.homeResult === 0 && resultData.awayResult === 0) {
-      setError('homeResult', {
-        type: 'manual',
-        message: 'Resultado invalido'
-      })
-      return;
-    }
     const resultMatch = {
       ...match,
       ...resultData
